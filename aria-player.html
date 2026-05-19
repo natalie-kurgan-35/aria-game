@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🎮 Operation ARIA — Player</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--panel:#111827;--border:#1e3a5f;--text:#e2e8f0;
+  --muted:#64748b;--p0:#00d4ff;--p1:#a855f7;--success:#10b981;--danger:#ef4444;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:24px 16px 48px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 20% 20%,rgba(0,212,255,.07) 0%,transparent 50%),
+             radial-gradient(ellipse at 80% 80%,rgba(168,85,247,.07) 0%,transparent 50%)}
+.wrap{position:relative;z-index:1;width:100%;max-width:540px;
+  display:flex;flex-direction:column;gap:16px}
+h2{font-size:clamp(1rem,3vw,1.3rem);font-weight:700}
+p{line-height:1.75}
+.gradient-text{background:linear-gradient(135deg,var(--p0),var(--p1));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 24px;border:none;border-radius:10px;font-size:.95rem;font-weight:600;
+  cursor:pointer;transition:all .2s;font-family:inherit;width:100%}
+.btn-primary{background:linear-gradient(135deg,var(--p0),#0099cc);color:#000}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,212,255,.4)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--p0);color:var(--p0)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:14px 0}
+.text-muted{color:var(--muted)}.text-sm{font-size:.85rem}.text-xs{font-size:.75rem}
+.mt-8{margin-top:8px}.mt-12{margin-top:12px}.hidden{display:none!important}
+
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-icon{width:36px;height:36px;border-radius:50%;border:2px solid var(--p0);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 10px rgba(0,212,255,.3)}
+  50%{box-shadow:0 0 24px rgba(0,212,255,.6)}}
+
+.player-header{border-radius:16px;overflow:hidden;border:2px solid}
+.ph-top{padding:16px 20px;display:flex;align-items:center;gap:14px}
+.ph-avatar{font-size:2.2rem}
+.ph-name{font-size:1.1rem;font-weight:800}
+.ph-sub{font-size:.8rem;opacity:.75;margin-top:2px}
+.ph-body{padding:0 20px 18px}
+
+.room-nav{display:flex;gap:6px;flex-wrap:wrap}
+.room-pill{padding:5px 12px;border-radius:999px;font-size:.75rem;font-weight:700;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;font-family:inherit}
+.room-pill.active{background:rgba(0,212,255,.1);border-color:var(--p0);color:var(--p0)}
+.room-pill.visited{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.4);color:var(--success)}
+
+/* Single card */
+.role-card{border-radius:14px;border:2px solid;overflow:hidden;margin-bottom:12px}
+.rc-header{padding:14px 18px;display:flex;align-items:center;gap:12px}
+.rc-icon{font-size:1.6rem}
+.rc-title{font-size:.95rem;font-weight:800}
+.rc-room{font-size:.75rem;opacity:.75;margin-top:2px}
+.rc-body{padding:0 18px 18px}
+.rc-clue{border-radius:10px;padding:16px;border-left:4px solid;
+  font-size:.88rem;line-height:1.9;background:rgba(0,0,0,.3)}
+.rc-task{margin-top:12px;background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:10px;padding:12px;
+  font-size:.82rem;color:var(--muted)}
+.rc-task strong{color:var(--text)}
+
+/* Multi-card (2-player) */
+.multi-card-wrap{display:flex;flex-direction:column;gap:12px}
+.card-tab-row{display:flex;gap:8px;margin-bottom:4px}
+.card-tab{padding:6px 14px;border-radius:8px;font-size:.78rem;font-weight:700;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .2s;font-family:inherit}
+.card-tab.active{background:rgba(0,212,255,.1);border-color:var(--p0);color:var(--p0)}
+
+.tip-box{background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.2);
+  border-radius:12px;padding:14px 16px;font-size:.82rem;line-height:1.7}
+.tip-box li{margin-left:16px;margin-bottom:4px}
+.ready-banner{background:rgba(16,185,129,.08);border:1px solid var(--success);
+  border-radius:12px;padding:18px;text-align:center}
+.error-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);
+  border-radius:16px;padding:28px;text-align:center}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap"></div>
+<script>
+let DATA=null;
+let currentRoom=0;
+let activeCardIndex=0; /* for multi-card players */
+
+window.addEventListener('load',()=>{
+  const hash=window.location.hash;
+  if(!hash||!hash.startsWith('#d=')){
+    showError('No briefing data found.',
+      'This link looks incomplete. Ask your host to resend your private link.');
+    return;
+  }
+  try{
+    const json=decodeURIComponent(escape(atob(hash.slice(3))));
+    DATA=JSON.parse(json);
+  }catch(e){
+    showError('Could not read briefing data.',
+      'The link may have been truncated. Ask your host to copy and resend your link.');
+    return;
+  }
+  renderPage();
+});
+
+/* ── RENDER ── */
+function renderPage(){
+  const wrap=document.getElementById('wrap');
+  wrap.innerHTML=`
+    <div class="logo-row">
+      <div class="logo-icon">🤖</div>
+      <div>
+        <div style="font-size:.65rem;color:var(--muted);letter-spacing:.12em;
+          text-transform:uppercase">Operation ARIA</div>
+        <div style="font-size:.8rem;font-weight:700;color:var(--p0)">Classified Briefing</div>
+      </div>
+    </div>
+
+    <div class="player-header" id="player-header" style="border-color:${DATA.color}">
+      <div class="ph-top" style="background:${rgba(DATA.color,.1)}">
+        <span class="ph-avatar">${DATA.avatar}</span>
+        <div>
+          <div class="ph-name" style="color:${DATA.color}">${DATA.name}</div>
+          <div class="ph-sub" style="color:${DATA.color}">
+            ARIA Recovery Unit · ${DATA.totalRooms} chambers
+          </div>
+        </div>
+      </div>
+      <div class="ph-body">
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;
+          text-transform:uppercase;letter-spacing:.1em">Jump to chamber</div>
+        <div class="room-nav" id="room-nav">
+          ${DATA.roles.map((r,i)=>`
+            <button class="room-pill ${i===0?'active':''}" id="pill-${i}"
+              onclick="switchRoom(${i})">
+              ${i+1}. ${shortTitle(r.roomTitle)}
+            </button>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div id="card-area"></div>
+
+    <div class="tip-box">
+      <strong style="color:var(--p1)">📋 Your role</strong>
+      <ul class="mt-8">
+        <li>Read your briefing carefully — it is <strong>private to you</strong>.</li>
+        <li>Share what you know <strong>verbally on the call</strong>. Do not read it word for word.</li>
+        <li>Do not share your screen or show your device to other players.</li>
+        <li>Switch chambers using the buttons above when the host advances the game.</li>
+        ${DATA.roles[0].cards.length>1
+          ?'<li>You have <strong>multiple briefings</strong> this chamber — use the tabs to switch between them.</li>'
+          :''}
+      </ul>
+    </div>
+
+    <div class="ready-banner hidden" id="ready-banner">
+      <div style="font-size:2rem;margin-bottom:8px">✅</div>
+      <div style="font-weight:700;color:var(--success)">Briefing acknowledged</div>
+      <div class="text-sm text-muted mt-8">
+        Tell the host on the call. Watch the shared screen for the puzzle.
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="ready-btn" onclick="markReady()">
+      ✅ I've read my briefing — I'm ready
+    </button>`;
+
+  renderCards(0);
+}
+
+/* ── RENDER CARDS FOR A ROOM ── */
+function renderCards(roomIndex){
+  const role=DATA.roles[roomIndex];
+  const cards=role.cards;
+  const area=document.getElementById('card-area');
+  activeCardIndex=0;
+
+  if(cards.length===1){
+    area.innerHTML=buildCardHTML(cards[0],DATA.color,role.roomEye,role.roomTitle,0);
+  }else{
+    /* Multiple cards — show tabs */
+    area.innerHTML=`
+      <div class="card-tab-row">
+        ${cards.map((c,i)=>`
+          <button class="card-tab ${i===0?'active':''}" id="ctab-${i}"
+            onclick="switchCard(${i})">
+            Briefing ${i+1}${c.fragmentId?' (Fragment '+c.fragmentId+')':''}
+          </button>`).join('')}
+      </div>
+      <div id="card-content">
+        ${buildCardHTML(cards[0],DATA.color,role.roomEye,role.roomTitle,0)}
+      </div>`;
+  }
+}
+
+function buildCardHTML(card,color,roomEye,roomTitle,idx){
+  return `
+    <div class="role-card" style="border-color:${color}">
+      <div class="rc-header" style="background:${rgba(color,.1)}">
+        <span class="rc-icon">${extractEmoji(card.title)}</span>
+        <div>
+          <div class="rc-title" style="color:${color}">${card.title}</div>
+          <div class="rc-room" style="color:${color}">${roomEye} · ${roomTitle}</div>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;
+          letter-spacing:.1em;margin-bottom:8px">🔒 Your classified briefing</div>
+        <div class="rc-clue" style="border-color:${color}">${card.clue}</div>
+        <div class="rc-task">
+          <strong>Your task this chamber:</strong><br>${card.task}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ── SWITCH CARD (multi-briefing players) ── */
+function switchCard(i){
+  const role=DATA.roles[currentRoom];
+  activeCardIndex=i;
+  role.cards.forEach((_,j)=>{
+    document.getElementById('ctab-'+j)?.classList.toggle('active',j===i);
+  });
+  document.getElementById('card-content').innerHTML=
+    buildCardHTML(role.cards[i],DATA.color,role.roomEye,role.roomTitle,i);
+}
+
+/* ── SWITCH ROOM ── */
+function switchRoom(i){
+  DATA.roles.forEach((_,j)=>{
+    const pill=document.getElementById('pill-'+j);
+    if(!pill)return;
+    pill.className='room-pill'+(j===i?' active':j<i?' visited':'');
+  });
+  currentRoom=i;
+  renderCards(i);
+  document.getElementById('ready-banner').classList.add('hidden');
+  document.getElementById('ready-btn').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── READY ── */
+function markReady(){
+  document.getElementById('ready-banner').classList.remove('hidden');
+  document.getElementById('ready-btn').classList.add('hidden');
+}
+
+/* ── ERROR ── */
+function showError(title,detail){
+  document.getElementById('wrap').innerHTML=`
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:3rem;margin-bottom:12px">⚠️</div>
+      <h2 style="color:var(--danger)">${title}</h2>
+    </div>
+    <div class="error-box"><p class="text-sm text-muted">${detail}</p></div>
+    <div class="card" style="text-align:center">
+      <p class="text-sm text-muted">
+        Try clicking the link again directly from Teams chat.<br>
+        If it still doesn't work, ask your host to resend your link.
+      </p>
+    </div>`;
+}
+
+/* ── HELPERS ── */
+function rgba(hex,alpha){
+  try{
+    const r=parseInt(hex.slice(1,3),16);
+    const g=parseInt(hex.slice(3,5),16);
+    const b=parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }catch{return `rgba(0,212,255,${alpha})`;}
+}
+
+function shortTitle(t){
+  const m={
+    "The Corrupted Prompt":"Prompt",
+    "The Hallucinated Email":"Email",
+    "The Tool Registry":"Tools",
+    "The Proposal Draft":"Draft",
+    "The Ethics Board":"Ethics"
+  };
+  return m[t]||t.split(' ').slice(0,2).join(' ');
+}
+
+function extractEmoji(title){
+  const m=title.match(/^\p{Emoji}/u);
+  return m?m[0]:'🎮';
+}
+</script>
+</body>
+</html>

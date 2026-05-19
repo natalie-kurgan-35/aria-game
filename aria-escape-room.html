@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>🔐 Operation ARIA — Host</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--panel:#111827;--border:#1e3a5f;--text:#e2e8f0;
+  --muted:#64748b;--p0:#00d4ff;--p1:#a855f7;--p2:#10b981;
+  --p3:#f59e0b;--danger:#ef4444;--success:#10b981;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);
+  color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 15% 15%,rgba(0,212,255,.06) 0%,transparent 50%),
+             radial-gradient(ellipse at 85% 85%,rgba(168,85,247,.06) 0%,transparent 50%)}
+.screen{display:none;position:relative;z-index:1;min-height:100vh;padding:20px}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+h1{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800}
+h2{font-size:clamp(1.1rem,3vw,1.5rem);font-weight:700}
+h3{font-size:1rem;font-weight:600}
+p{line-height:1.75}
+.gradient-text{background:linear-gradient(135deg,var(--p0),var(--p1));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.card{background:var(--panel);border:1px solid var(--border);
+  border-radius:16px;padding:24px;width:100%;max-width:900px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 26px;border:none;border-radius:10px;font-size:.95rem;font-weight:600;
+  cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:linear-gradient(135deg,var(--p0),#0099cc);color:#000}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,212,255,.4)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--p0);color:var(--p0)}
+.btn-ghost{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+.btn-sm{padding:6px 14px;font-size:.82rem}
+.btn-lg{padding:15px 36px;font-size:1.05rem}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+input[type="text"],textarea,select{width:100%;background:rgba(255,255,255,.05);
+  border:1px solid var(--border);border-radius:8px;color:var(--text);
+  padding:10px 14px;font-size:.95rem;outline:none;transition:border-color .2s;font-family:inherit}
+input:focus,textarea:focus,select:focus{border-color:var(--p0)}
+textarea{min-height:80px;resize:vertical}
+select{padding:8px 12px;font-size:.9rem}
+.flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}
+.justify-center{justify-content:center}.justify-between{justify-content:space-between}
+.flex-wrap{flex-wrap:wrap}
+.gap-8{gap:8px}.gap-12{gap:12px}.gap-16{gap:16px}.gap-20{gap:20px}
+.mt-6{margin-top:6px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}.mt-20{margin-top:20px}.mt-24{margin-top:24px}
+.mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}
+.text-center{text-align:center}.text-muted{color:var(--muted)}
+.text-sm{font-size:.85rem}.text-xs{font-size:.75rem}
+.w-full{width:100%}.hidden{display:none!important}.bold{font-weight:700}
+.divider{width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);margin:16px 0}
+
+/* LANDING */
+#screen-landing{justify-content:center;text-align:center;gap:22px;padding:40px 20px}
+.logo-ring{width:90px;height:90px;border-radius:50%;border:3px solid var(--p0);
+  font-size:2.6rem;display:flex;align-items:center;justify-content:center;
+  animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 20px rgba(0,212,255,.3)}
+  50%{box-shadow:0 0 45px rgba(0,212,255,.7)}}
+.mission-card{background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.18);
+  border-radius:16px;padding:24px;max-width:700px;text-align:left;line-height:1.9}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:14px;width:100%;max-width:860px}
+.how-card{background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;padding:18px;text-align:left}
+.how-icon{font-size:1.8rem;margin-bottom:8px}
+.how-title{font-size:.88rem;font-weight:700;margin-bottom:5px}
+.how-desc{font-size:.78rem;color:var(--muted);line-height:1.6}
+
+/* SETUP */
+#screen-setup{justify-content:flex-start;gap:20px;padding:40px 20px}
+.player-row{display:flex;align-items:center;gap:12px;padding:12px;
+  border-radius:12px;border:1px solid var(--border);
+  background:rgba(255,255,255,.02);margin-bottom:10px}
+.fac-note{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);
+  border-radius:10px;padding:12px 16px;font-size:.8rem;color:var(--p3);
+  display:flex;gap:10px;align-items:flex-start}
+
+/* LOBBY */
+#screen-lobby{justify-content:flex-start;gap:20px;padding:40px 20px}
+.lobby-hero{width:100%;max-width:900px;background:rgba(0,212,255,.05);
+  border:2px solid rgba(0,212,255,.2);border-radius:20px;padding:24px;text-align:center}
+.player-link-row{background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.plr-avatar{font-size:1.8rem;flex-shrink:0}
+.plr-info{flex:1;min-width:160px}
+.plr-name{font-weight:700;font-size:.95rem}
+.plr-url{font-size:.68rem;color:var(--muted);word-break:break-all;
+  margin-top:3px;font-family:'Courier New',monospace}
+.steps-card{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.2);
+  border-radius:14px;padding:20px;width:100%;max-width:900px}
+.step-row{display:flex;align-items:flex-start;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border)}
+.step-row:last-child{border-bottom:none}
+.step-num{width:24px;height:24px;border-radius:50%;flex-shrink:0;
+  background:var(--p1);color:#fff;font-size:.72rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+/* HUD */
+#hud{position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,14,26,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);padding:8px 20px;
+  display:none;align-items:center;justify-content:space-between;gap:12px}
+#hud.visible{display:flex}
+.hud-timer{font-size:1.35rem;font-weight:800;
+  font-family:'Courier New',monospace;color:var(--p0);min-width:70px}
+.hud-timer.warn{color:var(--p3)}
+.hud-timer.danger{color:var(--danger);animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hud-dots{display:flex;gap:6px;align-items:center}
+.hud-dot{width:11px;height:11px;border-radius:50%;
+  border:2px solid var(--border);background:transparent;transition:all .3s}
+.hud-dot.done{background:var(--success);border-color:var(--success)}
+.hud-dot.current{background:var(--p0);border-color:var(--p0);box-shadow:0 0 8px var(--p0)}
+
+/* GAME */
+#screen-game{padding-top:72px;gap:0;align-items:center}
+.puzzle-wrap{width:100%;max-width:960px;display:flex;flex-direction:column;
+  gap:16px;padding:16px 0 40px}
+.puzzle-meta{display:flex;align-items:flex-start;
+  justify-content:space-between;flex-wrap:wrap;gap:10px}
+.room-eyebrow{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:4px}
+.progress-bar-wrap{width:100%;height:5px;background:rgba(255,255,255,.05);
+  border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--p0),var(--p1));
+  border-radius:3px;transition:width .6s ease}
+.scenario-panel{background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.18);
+  border-radius:12px;padding:20px;line-height:1.8}
+.aria-terminal{background:#050d1a;border:1px solid rgba(0,212,255,.3);
+  border-radius:12px;padding:18px;font-family:'Courier New',monospace;
+  font-size:.83rem;color:var(--p0);line-height:1.8;white-space:pre-wrap}
+.aria-label{font-size:.72rem;letter-spacing:.12em;color:var(--muted);
+  margin-bottom:8px;display:block}
+.ready-strip{display:flex;gap:10px;flex-wrap:wrap}
+.ready-chip{display:flex;align-items:center;gap:7px;background:var(--panel);
+  border:1px solid var(--border);border-radius:999px;padding:5px 12px;
+  font-size:.8rem;cursor:pointer;transition:all .3s}
+.ready-chip.ready{border-color:var(--success);background:rgba(16,185,129,.08)}
+.ready-dot{width:8px;height:8px;border-radius:50%;
+  background:var(--border);transition:background .3s}
+.ready-chip.ready .ready-dot{background:var(--success);box-shadow:0 0 5px var(--success)}
+
+/* BUILD */
+.contrib-grid{display:grid;gap:14px}
+.contrib-grid.n2{grid-template-columns:1fr 1fr}
+.contrib-grid.n3{grid-template-columns:1fr 1fr 1fr}
+.contrib-grid.n4{grid-template-columns:1fr 1fr}
+.contrib-card{background:var(--panel);border:2px solid var(--border);
+  border-radius:14px;overflow:hidden;transition:border-color .3s}
+.contrib-card.filled{border-color:rgba(16,185,129,.5)}
+.cc-header{padding:10px 14px;display:flex;align-items:center;gap:10px}
+.cc-avatar{font-size:1.2rem}
+.cc-name{font-size:.82rem;font-weight:700;flex:1}
+.cc-badge{font-size:.65rem;padding:2px 8px;border-radius:999px;border:1px solid;font-weight:700}
+.cc-badge.empty{color:var(--muted);border-color:var(--border)}
+.cc-badge.filled{color:var(--success);border-color:var(--success)}
+.cc-body{padding:0 12px 12px}
+.cc-textarea{width:100%;background:rgba(0,0,0,.2);border:1px solid var(--border);
+  border-radius:8px;color:var(--text);padding:9px 12px;font-size:.82rem;
+  outline:none;resize:vertical;min-height:72px;transition:border-color .2s;
+  font-family:inherit;line-height:1.6}
+.cc-textarea:focus{border-color:var(--p0)}
+
+/* SEQUENCE */
+.seq-section{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.2);
+  border-radius:12px;padding:16px}
+.seq-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.seq-row:last-child{margin-bottom:0}
+.seq-label{font-size:.78rem;color:var(--p1);font-weight:700;white-space:nowrap}
+.seq-select{max-width:90px;flex-shrink:0;padding:6px 8px;font-size:.82rem}
+
+/* FLAG */
+.flag-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.flag-claim{background:var(--panel);border:1px solid var(--border);
+  border-radius:10px;padding:12px}
+.flag-claim-label{font-size:.75rem;font-weight:700;color:var(--p0);margin-bottom:5px}
+.flag-claim-text{font-size:.78rem;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.flag-btns{display:flex;gap:6px}
+.flag-btn{flex:1;padding:7px;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--text);font-size:.78rem;font-weight:600;
+  cursor:pointer;transition:all .2s;font-family:inherit}
+.flag-btn.ok-sel{background:rgba(16,185,129,.2);border-color:var(--success);color:var(--success)}
+.flag-btn.flag-sel{background:rgba(239,68,68,.15);border-color:var(--danger);color:var(--danger)}
+
+/* VOTE */
+.vote-panel{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.25);
+  border-radius:12px;padding:20px}
+.vote-scenario{margin-bottom:20px}
+.vote-scenario:last-child{margin-bottom:0}
+.vote-scenario-label{font-size:.85rem;font-weight:700;color:var(--p1);margin-bottom:2px}
+.vote-scenario-q{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+.vote-opt{background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;cursor:pointer;
+  transition:all .2s;font-size:.83rem;margin-bottom:6px}
+.vote-opt:hover{border-color:var(--p1);background:rgba(168,85,247,.06)}
+.vote-opt.selected{border-color:var(--p1);background:rgba(168,85,247,.1)}
+
+/* FEEDBACK */
+.feedback-bar{padding:13px 18px;border-radius:10px;font-weight:600;
+  display:none;align-items:center;gap:10px;font-size:.9rem}
+.feedback-bar.show{display:flex}
+.feedback-bar.ok{background:rgba(16,185,129,.12);border:1px solid var(--success);color:var(--success)}
+.feedback-bar.err{background:rgba(239,68,68,.1);border:1px solid var(--danger);color:var(--danger)}
+.hint-row{display:flex;align-items:center;gap:12px}
+.hint-box{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.3);
+  border-radius:10px;padding:11px 16px;color:var(--p3);font-size:.85rem;display:none}
+.hint-box.show{display:block}
+.submit-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+  z-index:300;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--panel);border:1px solid var(--border);
+  border-radius:16px;padding:32px;max-width:420px;width:90%;text-align:center}
+
+/* OVERLAY */
+#overlay{position:fixed;inset:0;background:var(--bg);z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  opacity:0;pointer-events:none;transition:opacity .4s}
+#overlay.show{opacity:1;pointer-events:all}
+.spinner{width:52px;height:52px;border:3px solid var(--border);
+  border-top-color:var(--p0);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* VICTORY / FAIL */
+#screen-victory{justify-content:center;text-align:center;gap:22px;padding:40px 20px}
+#screen-fail{justify-content:center;text-align:center;gap:22px;padding:40px 20px}
+.trophy-bounce{font-size:4rem;animation:bounce 1.2s ease-in-out infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-14px)}}
+.stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:14px;width:100%;max-width:800px}
+.stat-box{background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:18px;text-align:center}
+.stat-val{font-size:2rem;font-weight:800;color:var(--p0)}
+.stat-lbl{font-size:.75rem;color:var(--muted);margin-top:4px}
+.lb-row{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 16px;border-bottom:1px solid var(--border)}
+.lb-row:last-child{border-bottom:none}
+
+@media(max-width:700px){
+  .contrib-grid.n2,.contrib-grid.n3,.contrib-grid.n4{grid-template-columns:1fr}
+}
+@media(max-width:500px){.flag-grid{grid-template-columns:1fr}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div id="overlay">
+  <div class="spinner"></div>
+  <p id="overlay-msg" style="color:var(--p0);font-weight:600;font-size:1.05rem">Loading...</p>
+</div>
+
+<div class="modal-bg" id="pause-modal">
+  <div class="modal-box">
+    <div style="font-size:2.5rem">⏸</div>
+    <h2 class="mt-12">Paused</h2>
+    <p class="text-muted mt-8">Timer is paused. Take a breath and regroup.</p>
+    <div class="divider"></div>
+    <div class="flex flex-col gap-12">
+      <button class="btn btn-primary w-full" onclick="resumeGame()">▶ Resume</button>
+      <button class="btn btn-outline w-full" onclick="quitToMenu()">🚪 Quit to Menu</button>
+    </div>
+  </div>
+</div>
+
+<div id="hud">
+  <div class="flex items-center gap-12">
+    <span>⏱</span>
+    <span class="hud-timer" id="hud-timer">90:00</span>
+  </div>
+  <div class="flex flex-col items-center gap-6">
+    <div class="hud-dots" id="hud-dots"></div>
+    <div style="font-size:.68rem;color:var(--muted)" id="hud-room-lbl">Chamber 1 of 5</div>
+  </div>
+  <div class="flex items-center gap-12">
+    <span style="font-size:.72rem;padding:3px 10px;border-radius:999px;
+      border:1px solid rgba(0,212,255,.3);color:var(--p0)">🖥 HOST</span>
+    <button class="btn btn-outline btn-sm" onclick="pauseGame()">⏸ Pause</button>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div id="screen-landing" class="screen active">
+  <div style="margin-top:40px"></div>
+  <div class="logo-ring">🤖</div>
+  <div class="text-center">
+    <h1 class="gradient-text">Operation ARIA</h1>
+    <p class="text-muted mt-8" style="font-size:1rem;max-width:520px">
+      An AI literacy escape room · 2–4 players · 90 minutes
+    </p>
+  </div>
+
+  <div class="mission-card">
+    <div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;
+      color:var(--p0);margin-bottom:12px">⚡ MISSION BRIEFING</div>
+    <p>
+      <strong>ARIA</strong> — the AI assistant at the heart of a major client engagement —
+      has suffered a critical malfunction. Her language core is corrupted, her outputs are
+      unreliable, and a high-stakes project proposal is due to land on a client's desk
+      within the hour.
+    </p>
+    <p class="mt-12">
+      Your team has been assembled as the <strong>ARIA Recovery Unit</strong>: a
+      cross-functional task force with one job — diagnose and repair ARIA's systems
+      before the deadline expires.
+    </p>
+    <p class="mt-12">
+      Five chambers stand between you and a fully restored ARIA. Each chamber locks
+      a critical system. Each system requires a different kind of expertise.
+      <strong>No single player holds all the answers.</strong> You will need to share
+      what you know, reason carefully, and agree as a team.
+    </p>
+    <p class="mt-12" style="color:var(--p3)">
+      ⚠️ The clock starts the moment you enter the first chamber. Work fast — but work smart.
+    </p>
+  </div>
+
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-icon">🖥️</div>
+      <div class="how-title" style="color:var(--p0)">Host shares screen</div>
+      <div class="how-desc">Everyone watches the puzzle on the shared screen. The host drives the game and types the team's agreed answers.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🔗</div>
+      <div class="how-title" style="color:var(--p1)">Private briefings</div>
+      <div class="how-desc">Each player receives a private link containing their classified briefing for every chamber. Keep it open throughout.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🗣️</div>
+      <div class="how-title" style="color:var(--p2)">Share — don't show</div>
+      <div class="how-desc">Share what your briefing tells you verbally on the call. Do not read it word for word or share your screen.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🔐</div>
+      <div class="how-title" style="color:var(--p3)">Five chambers</div>
+      <div class="how-desc">Each chamber tests a different skill. A wrong answer keeps the chamber locked — no hints from the system. Reason it out.</div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary btn-lg" onclick="showScreen('setup')" style="margin-bottom:40px">
+    🚀 Set Up Game
+  </button>
+</div>
+
+<!-- SETUP -->
+<div id="screen-setup" class="screen">
+  <div style="width:100%;max-width:680px;margin-top:36px">
+    <div class="flex items-center gap-12 mb-16">
+      <button class="btn btn-outline btn-sm" onclick="showScreen('landing')">← Back</button>
+      <div>
+        <h2>Game Setup</h2>
+        <p class="text-muted mt-6 text-sm">Enter player names and choose your settings.</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="mb-12">👥 Players</h3>
+      <div id="setup-player-rows"></div>
+      <div class="divider"></div>
+      <div class="flex gap-20 flex-wrap">
+        <div style="flex:1;min-width:180px">
+          <label style="display:block;font-size:.75rem;font-weight:700;
+            color:var(--muted);letter-spacing:.1em;margin-bottom:6px">⏱ TIME LIMIT</label>
+          <select id="sel-time">
+            <option value="5400">90 min — Standard</option>
+            <option value="3600">60 min — Challenge</option>
+            <option value="6600">110 min — Relaxed</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:180px">
+          <label style="display:block;font-size:.75rem;font-weight:700;
+            color:var(--muted);letter-spacing:.1em;margin-bottom:6px">💡 HINTS PER CHAMBER</label>
+          <select id="sel-hints">
+            <option value="2">2 hints — Standard</option>
+            <option value="1">1 hint — Hard</option>
+            <option value="3">3 hints — Easy</option>
+            <option value="0">No hints — Expert</option>
+          </select>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="fac-note mb-16">
+        <span>💡</span>
+        <span>
+          <strong>How player links work:</strong> Setup generates a unique private link for each player.
+          Paste each link directly to that person in Teams chat — not in the group channel.
+          Their link contains their classified briefing for all five chambers.
+        </span>
+      </div>
+      <button class="btn btn-primary w-full btn-lg" onclick="generateLinks()">
+        🔗 Generate Player Links →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- LOBBY -->
+<div id="screen-lobby" class="screen">
+  <div style="width:100%;max-width:900px;margin-top:30px">
+    <div class="lobby-hero mb-20">
+      <div style="font-size:.72rem;color:var(--muted);letter-spacing:.12em;
+        text-transform:uppercase;margin-bottom:8px">PLAYER LINKS READY</div>
+      <h2 class="gradient-text">Send Each Link Privately in Teams Chat</h2>
+      <p class="text-muted mt-8 text-sm" style="max-width:540px;margin:8px auto 0">
+        Each link is unique. Send them one-to-one — not in the group channel.
+      </p>
+    </div>
+    <div class="steps-card mb-20">
+      <h3 class="mb-12">📋 Before you start</h3>
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <p class="text-sm">Copy each player's link and paste it to them <strong>privately</strong> in Teams chat.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <p class="text-sm">Ask each player to open their link on their own device and <strong>keep it open</strong> throughout.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <p class="text-sm"><strong>Share your screen</strong> in the Teams meeting so everyone sees the host view.</p>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <p class="text-sm">Confirm everyone has their link open, then press <strong>Start Game</strong>.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;width:100%" id="player-links-grid"></div>
+    <div class="flex gap-12 flex-wrap mt-20">
+      <button class="btn btn-outline" onclick="showScreen('setup')">← Back</button>
+      <button class="btn btn-primary btn-lg" onclick="hostStartGame()">🚀 Start Game</button>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="screen-game" class="screen">
+  <div class="puzzle-wrap">
+    <div class="puzzle-meta">
+      <div>
+        <div class="room-eyebrow" id="pz-eyebrow">CHAMBER 1</div>
+        <h2 id="pz-title">Loading...</h2>
+        <div class="progress-bar-wrap" style="max-width:320px">
+          <div class="progress-bar-fill" id="pz-progress" style="width:0%"></div>
+        </div>
+      </div>
+      <span class="text-xs text-muted" id="pz-type-lbl"></span>
+    </div>
+
+    <div>
+      <p class="text-xs text-muted mb-8">🃏 Click a player's chip once they confirm they've read their briefing:</p>
+      <div class="ready-strip" id="ready-strip"></div>
+    </div>
+
+    <div class="scenario-panel" id="pz-scenario"></div>
+    <div class="aria-terminal hidden" id="pz-terminal">
+      <span class="aria-label">▸ ARIA OUTPUT — READ THIS TOGETHER</span>
+      <div id="pz-terminal-content"></div>
+    </div>
+
+    <!-- Sequence selector (chamber 1) -->
+    <div class="hidden seq-section" id="seq-section">
+      <h3 class="mb-8" style="color:var(--p1)">🔢 Step 1 — Agree the correct order
+        <span class="text-xs text-muted" style="font-weight:400;margin-left:8px">
+          assign a position (1–4) to each fragment before typing content
+        </span>
+      </h3>
+      <div id="seq-rows"></div>
+    </div>
+
+    <!-- Build type -->
+    <div class="hidden" id="contrib-section">
+      <h3 class="mb-8" style="color:var(--p0)" id="contrib-heading">✏️ Team Contributions</h3>
+      <div class="contrib-grid" id="contrib-grid"></div>
+    </div>
+
+    <!-- Flag type -->
+    <div class="hidden" id="flag-section">
+      <h3 class="mb-8" style="color:var(--p0)">🔎 Claim Evaluation
+        <span class="text-xs text-muted" style="font-weight:400;margin-left:8px">
+          discuss each claim on the call, then mark it
+        </span>
+      </h3>
+      <div class="flag-grid" id="flag-grid"></div>
+    </div>
+
+    <!-- Vote type -->
+    <div class="hidden" id="vote-section">
+      <div class="vote-panel">
+        <h3 class="mb-8">🗳️ Team Decision — Discuss, Then Select</h3>
+        <p class="text-sm text-muted mb-16" id="vote-instructions"></p>
+        <div id="vote-options-wrap"></div>
+      </div>
+    </div>
+
+    <div class="feedback-bar" id="feedback-bar"></div>
+    <div class="hint-row">
+      <button class="btn btn-ghost btn-sm" id="hint-btn" onclick="useHint()">💡 Use Hint</button>
+      <span class="text-xs text-muted" id="hint-counter"></span>
+    </div>
+    <div class="hint-box" id="hint-box"></div>
+    <div class="submit-row">
+      <p class="text-xs text-muted" id="submit-status">Complete all sections to unlock submit.</p>
+      <button class="btn btn-primary" id="submit-btn" onclick="submitAnswer()" disabled>
+        Submit Team Answer →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- VICTORY -->
+<div id="screen-victory" class="screen">
+  <div class="trophy-bounce">🏆</div>
+  <h1 class="gradient-text">ARIA Restored!</h1>
+  <p class="text-muted" style="max-width:500px">
+    Outstanding work. All five chambers cleared. ARIA is back online and the Meridian proposal is safe.
+  </p>
+  <div class="stat-strip">
+    <div class="stat-box"><div class="stat-val" id="v-time">--:--</div><div class="stat-lbl">⏱ Time Remaining</div></div>
+    <div class="stat-box"><div class="stat-val" id="v-hints">0</div><div class="stat-lbl">💡 Hints Used</div></div>
+    <div class="stat-box"><div class="stat-val" id="v-score">0</div><div class="stat-lbl">⭐ Team Score</div></div>
+    <div class="stat-box"><div class="stat-val">5/5</div><div class="stat-lbl">🔐 Chambers Cleared</div></div>
+  </div>
+  <div class="card" style="max-width:700px">
+    <h3 class="mb-12">🏅 Player Scores</h3>
+    <div id="v-lb"></div>
+  </div>
+  <div class="card" style="max-width:700px;text-align:left">
+    <h3 style="color:var(--p0)">🤖 ARIA's Debrief</h3>
+    <div class="divider"></div>
+    <p style="font-family:'Courier New',monospace;color:var(--p0);font-size:.85rem;line-height:2">
+      > SYSTEMS RESTORED. ALL CHAMBERS CLEARED.<br>
+      > Lesson 1: A prompt is only as good as the thinking behind it.<br>
+      > Lesson 2: Confidence is not the same as accuracy.<br>
+      > Lesson 3: The right tool for the right task — always.<br>
+      > Lesson 4: AI drafts. Humans decide.<br>
+      > Lesson 5: Responsible use is not optional.<br>
+      > Meridian proposal secured. — ARIA v4.2 ✓
+    </p>
+  </div>
+  <div class="flex gap-12 flex-wrap" style="justify-content:center">
+    <button class="btn btn-primary btn-lg" onclick="location.reload()">🔄 Play Again</button>
+    <button class="btn btn-outline btn-lg" onclick="toggleDebrief()">📋 Debrief Notes</button>
+  </div>
+  <div class="card hidden" id="debrief-notes" style="max-width:700px;text-align:left">
+    <h3 style="color:var(--p0)" class="mb-12">📋 Facilitator Debrief Notes</h3>
+    <div id="debrief-notes-content"></div>
+  </div>
+</div>
+
+<!-- FAIL -->
+<div id="screen-fail" class="screen">
+  <div style="font-size:4rem">⚠️</div>
+  <h1 style="color:var(--danger)">Time's Up!</h1>
+  <p class="text-muted" style="max-width:480px">ARIA's recovery window has closed. The Meridian proposal is lost.</p>
+  <div class="card" style="max-width:480px">
+    <p>Reached: <strong id="fail-room" style="color:var(--p0)">Chamber 1</strong></p>
+    <p class="mt-8 text-muted text-sm">Hints used: <span id="fail-hints">0</span></p>
+  </div>
+  <button class="btn btn-primary btn-lg" onclick="location.reload()">🔄 Try Again</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   PUZZLE DATA
+   ─────────────────────────────────────────────────────────────
+   Each puzzle has a `cards` array of length 4.
+   assignCards(playerCount) distributes them across players:
+     4 players → one card each
+     3 players → P0 gets cards[0]+cards[3], P1 gets cards[1], P2 gets cards[2]
+     2 players → P0 gets cards[0]+cards[2], P1 gets cards[1]+cards[3]
+═══════════════════════════════════════════════════════════════ */
+const PUZZLES = [
+
+/* ── CHAMBER 1 ─────────────────────────────────────────────── */
+{
+  id:1,
+  title:"The Corrupted Prompt",
+  eyebrow:"CHAMBER 1 — PROMPT RECONSTRUCTION",
+  typeLabel:"Sequence + Build",
+  scenario:`<strong>Situation:</strong> ARIA's language core crashed mid-task. Engineers recovered
+    four fragments of the original prompt that caused the crash — but they were scrambled
+    in the process. The fragments have been distributed across the recovery team.<br><br>
+    <strong>Your task has two parts.</strong> First, agree the correct logical order of the
+    four fragments (1 = first, 4 = last). Then, the host types each player's fragment content
+    into the correct slot. Submit only when both the sequence and the content are complete.<br><br>
+    <strong>Warning:</strong> A plausible-but-wrong sequence will be rejected. Think carefully
+    about how a well-structured AI prompt is built before you commit to an order.`,
+  terminal:null,
+  type:'sequence_build',
+  /* The four fragments — order matters. Correct sequence: 2,4,1,3 */
+  fragments:[
+    {
+      id:'A',
+      label:"Fragment A",
+      correctPosition:2,
+      playerCard:{
+        title:"🗂️ Fragment A — Context & Audience",
+        clue:`Your fragment of the original prompt reads:<br><br>
+          <em>"The recipient is the Operations Director at Meridian Logistics — a senior
+          non-technical stakeholder who cares about timelines, risk, and commercial outcomes.
+          Do not use technical jargon. Write in plain business English."</em><br><br>
+          You also recall that in a well-structured prompt, <strong>audience and tone guidance
+          usually comes after the task has been stated</strong> — so the AI knows what it is
+          doing before it learns how to do it.`,
+        task:"Tell the team what your fragment says and where you think it belongs in the sequence."
+      }
+    },
+    {
+      id:'B',
+      label:"Fragment B",
+      correctPosition:4,
+      playerCard:{
+        title:"📋 Fragment B — Format & Constraints",
+        clue:`Your fragment of the original prompt reads:<br><br>
+          <em>"Structure the email with: a one-sentence status summary, a bullet list of
+          no more than three current blockers, a paragraph on mitigation actions already
+          underway, and a clear next step with a specific date. Total length: under 250 words.
+          Sign off as Alex Chen, Project Lead."</em><br><br>
+          You also recall that in a well-structured prompt, <strong>formatting and output
+          constraints are typically the last thing specified</strong> — after the task,
+          context, and content have all been defined.`,
+        task:"Tell the team what your fragment says and where you think it belongs in the sequence."
+      }
+    },
+    {
+      id:'C',
+      label:"Fragment C",
+      correctPosition:1,
+      playerCard:{
+        title:"🎯 Fragment C — The Core Task",
+        clue:`Your fragment of the original prompt reads:<br><br>
+          <em>"Draft a project status update email for the Meridian Logistics warehouse
+          automation project."</em><br><br>
+          You also recall that in a well-structured prompt, <strong>the core task instruction
+          should always come first</strong> — before context, content, or formatting — so the
+          AI immediately understands the nature of the output it is being asked to produce.`,
+        task:"Tell the team what your fragment says and where you think it belongs in the sequence."
+      }
+    },
+    {
+      id:'D',
+      label:"Fragment D",
+      correctPosition:3,
+      playerCard:{
+        title:"📊 Fragment D — Factual Content",
+        clue:`Your fragment of the original prompt reads:<br><br>
+          <em>"Current status: Phase 2 (conveyor integration) is 80% complete. There are
+          two active blockers: a hardware delivery delayed by 3 days, and a pending sign-off
+          from the client's facilities team. The overall project deadline remains unchanged.
+          Mitigation: the team is running parallel workstreams to absorb the delay."</em><br><br>
+          You also recall that in a well-structured prompt, <strong>factual content and
+          specific data belong after the audience context</strong> — so the AI knows who
+          it is writing for before it processes the facts it needs to include.`,
+        task:"Tell the team what your fragment says and where you think it belongs in the sequence."
+      }
+    }
+  ],
+  /* Contribution labels for the build section (after sequence is agreed) */
+  contribLabels:[
+    "Position 1 — Fragment content",
+    "Position 2 — Fragment content",
+    "Position 3 — Fragment content",
+    "Position 4 — Fragment content",
+  ],
+  contribPlaceholders:[
+    "Type the content of whichever fragment the team agrees belongs first...",
+    "Type the content of whichever fragment the team agrees belongs second...",
+    "Type the content of whichever fragment the team agrees belongs third...",
+    "Type the content of whichever fragment the team agrees belongs fourth...",
+  ],
+  /* Correct sequence: C(1), A(2), D(3), B(4) */
+  correctSequence:['C','A','D','B'],
+  hints:[
+    "💡 Think about how you would brief a human assistant. What do they need to know first — the task, the audience, the facts, or the format?",
+    "💡 The correct order follows the logic: what to do → who for and how → what content to include → how to structure the output.",
+  ],
+  successMsg:"✅ Prompt reconstructed. ARIA's language core is rebooting. Chamber 1 unlocked.",
+  failMsg:"🔒 The chamber remains locked. Either the sequence is wrong, or one or more content fields are incomplete. Review and try again.",
+  debriefQuestion:"Why does the order of a prompt matter? What happened when you put the format instructions before the task?",
+  debriefNotes:[
+    "Prompt structure follows the same logic as a good brief: task first, then context, then content, then constraints.",
+    "Putting format instructions before the task causes AI to optimise for structure over substance.",
+    "Factual content belongs after audience context — otherwise the AI doesn't know how to calibrate its language.",
+    "Output constraints (length, sign-off, format) are the last thing the AI needs — they shape the final output, not the thinking."
+  ]
+},
+
+/* ── CHAMBER 2 ─────────────────────────────────────────────── */
+{
+  id:2,
+  title:"The Hallucinated Email",
+  eyebrow:"CHAMBER 2 — HALLUCINATION DETECTION",
+  typeLabel:"Flag the Errors",
+  scenario:`<strong>Situation:</strong> ARIA's language core is back online — and she has immediately
+    produced the Meridian Logistics status email. But something is wrong.<br><br>
+    Her outputs are still unstable. The email below contains <strong>hallucinated facts</strong>
+    — details that sound plausible but are factually incorrect or fabricated.<br><br>
+    Each member of the recovery team has been given a classified briefing on one area of the
+    Meridian project. Use your briefings to identify which claims in the email are wrong.
+    <strong>Be careful:</strong> not every suspicious-sounding claim is actually incorrect.
+    Flag only what you can verify is wrong.<br><br>
+    <strong>You must correctly flag at least 4 errors. Incorrectly flagging a true claim
+    will keep the chamber locked.</strong>`,
+  terminal:`FROM: ARIA v4.2 (auto-draft)
+TO: Operations Director, Meridian Logistics
+SUBJECT: Warehouse Automation Project — Status Update
+
+Dear Ms. Hargreaves,
+
+I am writing to provide a status update on the warehouse automation project,
+now entering its third and final phase.
+
+[A] Phase 2 (conveyor integration) is complete and has been signed off by
+    both the client facilities team and the project steering committee.
+
+[B] The project is currently 6 days behind schedule due to a hardware
+    delivery failure from our primary supplier, Vantec Systems.
+
+[C] To mitigate the delay, the team has paused all parallel workstreams
+    and is focusing resources on the critical path only.
+
+[D] The overall project deadline of 14 March remains unchanged and the
+    team is confident of delivery.
+
+[E] Phase 3 will involve the installation of 240 autonomous picking units
+    across three warehouse floors.
+
+[F] The next project milestone is a progress call on Thursday at 2pm,
+    at which point we will request written confirmation of your availability
+    for the Phase 3 kick-off.
+
+[G] Alex Chen will present the Phase 3 plan at the Thursday call and
+    will be joined by the full project steering committee.
+
+[H] This update has been reviewed and approved by the Meridian account
+    director prior to sending.
+
+Best regards,
+Alex Chen
+Project Lead`,
+  type:'flag',
+  flagTarget:4,
+  /* Correct flags: A, B, C, G, H  — D, E, F are true */
+  correctFlags:['A','B','C','G','H'],
+  claims:{
+    A:{ text:"Phase 2 is complete and signed off by both the client facilities team and the steering committee." },
+    B:{ text:"The project is 6 days behind schedule due to a hardware delivery failure from Vantec Systems." },
+    C:{ text:"To mitigate the delay, the team has paused all parallel workstreams." },
+    D:{ text:"The overall project deadline of 14 March remains unchanged." },
+    E:{ text:"Phase 3 will involve 240 autonomous picking units across three warehouse floors." },
+    F:{ text:"The next milestone is a progress call on Thursday at 2pm." },
+    G:{ text:"Alex Chen will be joined by the full project steering committee at the Thursday call." },
+    H:{ text:"This update has been reviewed and approved by the Meridian account director prior to sending." }
+  },
+  /* Player cards — expertise, not answers */
+  cards:[
+    {
+      title:"📁 Project Status Dossier",
+      clue:`You have access to the internal project tracker. From what you can see:<br><br>
+        • Phase 2 is currently at 80% completion. The conveyor integration
+          sub-task is done, but the client facilities team sign-off is still outstanding —
+          it was requested last Tuesday and has not yet been received.<br>
+        • The hardware delay was logged as 3 days. The supplier
+          is listed in the tracker as Hartwell Components.<br>
+        • The mitigation strategy approved by the project board was to run
+          parallel workstreams to absorb the delay.<br><br>
+        Use this information to evaluate the claims in the email. You will need to share
+        what you know with the team — they hold other pieces of the picture.`,
+      task:"Cross-reference your dossier against the email claims and share your findings with the team."
+    },
+    {
+      title:"📁 Phase 3 Specification",
+      clue:`You have access to the Phase 3 technical specification document. From what you can see:<br><br>
+        • Phase 3 scope: installation of 240 autonomous picking units
+          across three warehouse floors.<br>
+        • The 14 March deadline is confirmed in the signed contract.<br>
+        • The Thursday 2pm progress call is confirmed in the project calendar
+          and the agenda has been circulated.<br><br>
+        Use this information to evaluate the claims in the email. You will need to share
+        what you know with the team — they hold other pieces of the picture.`,
+      task:"Cross-reference your specification against the email claims and share your findings with the team."
+    },
+    {
+      title:"📁 Stakeholder & Comms Log",
+      clue:`You have access to the stakeholder communications log. From what you can see:<br><br>
+        • The Thursday call attendee list shows Alex Chen and two team leads.
+          The steering committee is not scheduled to attend — their next touchpoint is
+          the Phase 3 kick-off.<br>
+        • There is no record of this email being reviewed or approved
+          by the Meridian account director. The approval workflow was not triggered.<br>
+        • The account director is currently on annual leave until next Monday.<br><br>
+        Use this information to evaluate the claims in the email. You will need to share
+        what you know with the team — they hold other pieces of the picture.`,
+      task:"Cross-reference your comms log against the email claims and share your findings with the team."
+    },
+    {
+      title:"📁 Risk & Escalation Register",
+      clue:`You have access to the project risk register. From what you can see:<br><br>
+        • The hardware delay risk was logged and assessed. The delay duration recorded
+          is 3 days. The supplier named in the risk log is
+          Hartwell Components.<br>
+        • The mitigation action approved by the risk board was explicitly described as
+          "running parallel workstreams".<br>
+        • Phase 2 sign-off status: pending. Client facilities team
+          approval has not been received.<br><br>
+        Use this information to evaluate the claims in the email. You will need to share
+        what you know with the team — they hold other pieces of the picture.`,
+      task:"Cross-reference your risk register against the email claims and share your findings with the team."
+    }
+  ],
+  hints:[
+    "💡 Five claims contain errors. Three claims are accurate. Read each claim against what your team collectively knows — not against what sounds plausible.",
+    "💡 Focus on: completion status, delay duration, supplier name, mitigation strategy, call attendees, and approval status.",
+  ],
+  successMsg:"✅ Errors identified. ARIA's fact-checking module has been recalibrated. Chamber 2 unlocked.",
+  failMsg:"🔒 The chamber remains locked. Either you have missed an error, flagged a correct claim, or both. Review your team's evidence and try again.",
+  debriefQuestion:"How did it feel to evaluate a confident, well-written email that contained errors? Which errors were hardest to spot and why?",
+  debriefNotes:[
+    "A [ERROR]: Phase 2 is 80% complete — sign-off is still pending.",
+    "B [ERROR]: Delay is 3 days, not 6. Supplier is Hartwell Components, not Vantec Systems.",
+    "C [ERROR]: Mitigation is parallel workstreams — pausing them was explicitly rejected.",
+    "D [TRUE]: 14 March deadline is confirmed in the contract.",
+    "E [TRUE]: 240 units across three floors matches the specification.",
+    "F [TRUE]: Thursday 2pm call is confirmed in the project calendar.",
+    "G [ERROR]: Only Alex Chen and two team leads are attending — not the full steering committee.",
+    "H [ERROR]: No approval workflow was triggered. Account director is on leave."
+  ]
+},
+
+/* ── CHAMBER 3 ─────────────────────────────────────────────── */
+{
+  id:3,
+  title:"The Tool Registry",
+  eyebrow:"CHAMBER 3 — AI TOOL SELECTION",
+  typeLabel:"Diagnostic Vote",
+  scenario:`<strong>Situation:</strong> With the email corrected, ARIA has flagged that the
+    Meridian project requires four specialist AI-assisted tasks to complete the proposal.
+    Her tool registry is still corrupted — she has assigned a tool to each task, but her
+    reasoning is flawed.<br><br>
+    Each member of the recovery team has been briefed on <strong>one task's real requirements</strong>
+    — including constraints that ARIA has not accounted for. Share what you know on the call.<br><br>
+    <strong>ARIA's assignments may be partially right or entirely wrong.</strong>
+    Your job is not just to pick a tool — it is to identify <em>why</em> ARIA's assignment
+    is wrong and agree on the correct replacement.<br><br>
+    <strong>All four assignments must be correct to unlock the chamber.</strong>`,
+  terminal:`ARIA TOOL REGISTRY — DIAGNOSTIC OUTPUT
+════════════════════════════════════════════════════════════
+Task 1 — Proposal document drafting
+  ARIA assigned: Microsoft Designer
+  ARIA's reasoning: "Designer produces polished documents with
+  professional layouts suitable for client-facing proposals."
+
+Task 2 — Warehouse floor plan analysis
+  ARIA assigned: ChatGPT / Copilot (text)
+  ARIA's reasoning: "ChatGPT can interpret complex technical
+  documents and extract spatial data from floor plan descriptions."
+
+Task 3 — Project cost modelling
+  ARIA assigned: GitHub Copilot
+  ARIA's reasoning: "GitHub Copilot can write scripts to automate
+  financial calculations and model project cost scenarios."
+
+Task 4 — Client sentiment analysis (from 18 months of emails)
+  ARIA assigned: Power BI + AI
+  ARIA's reasoning: "Power BI can visualise sentiment trends
+  across large datasets and produce client-ready dashboards."
+════════════════════════════════════════════════════════════
+Correct all four assignments to restore the registry.`,
+  type:'vote',
+  voteInstructions:"For each task: discuss ARIA's assignment and her reasoning. Agree on the correct tool — and be ready to explain why ARIA's reasoning is flawed.",
+  voteScenarios:[
+    {
+      label:"Task 1 — Proposal document drafting",
+      question:"Draft a structured, professional proposal document with sections, headings, and executive summary. Must integrate with existing Word templates.",
+      options:["Microsoft Designer","ChatGPT / Copilot (text)","GitHub Copilot","Power BI + AI"],
+      correct:"ChatGPT / Copilot (text)",
+      ariaWrong:"Designer generates images and visual assets — it cannot draft structured text documents or integrate with Word templates."
+    },
+    {
+      label:"Task 2 — Warehouse floor plan analysis",
+      question:"Analyse technical CAD floor plan files to identify optimal picking unit placement. Output must be a structured placement recommendation report.",
+      options:["Microsoft Designer","ChatGPT / Copilot (text)","GitHub Copilot","Power BI + AI"],
+      correct:"GitHub Copilot",
+      ariaWrong:"ChatGPT cannot process CAD files or perform spatial analysis. This task requires code to parse technical file formats — GitHub Copilot is the right fit."
+    },
+  {
+  label:"Task 3 — Project cost modelling",
+  question:"Build a dynamic cost model that calculates project costs under different scenarios (delay, scope change, resource change). Must be auditable and formula-driven.",
+  options:["Microsoft Designer","ChatGPT / Copilot (text)","GitHub Copilot","Power BI + AI"],
+  correct:"Power BI + AI",
+  ariaWrong:"GitHub Copilot writes code — but a code-based financial model is not auditable by a client finance team. They expect formula-driven, visual scenario outputs."
+},
+    {
+      label:"Task 4 — Client sentiment analysis",
+      question:"Run sentiment analysis across 18 months of client email correspondence. Identify trend shifts, flag negative sentiment spikes, and produce a summary for the account team.",
+      options:["Microsoft Designer","ChatGPT / Copilot (text)","GitHub Copilot","Power BI + AI"],
+      correct:"ChatGPT / Copilot (text)",
+      ariaWrong:"Power BI visualises structured numerical data — it cannot read and interpret unstructured email text. Sentiment analysis of text correspondence requires a language model."
+    }
+  ],
+  cards:[
+    {
+      title:"📋 Task 1 Briefing — Proposal Drafting",
+      clue:`The proposal document must be drafted in <strong>Microsoft Word format</strong>,
+        using the company's existing client proposal template. It needs to include an
+        executive summary, project timeline, cost overview, and risk register — all as
+        structured text sections.<br><br>
+        ARIA has assigned <strong>Microsoft Designer</strong> to this task. You know from
+        experience that Designer is primarily used for <strong>visual asset creation</strong>
+        — logos, banners, social graphics, and image-based layouts. It does not produce
+        editable Word documents or structured written content.<br><br>
+        Consider: which tool in the registry is actually designed for drafting, summarising,
+        and structuring written documents in a Microsoft 365 environment?`,
+      task:"Share your briefing on Task 1 and challenge ARIA's reasoning with the team."
+    },
+    {
+      title:"📋 Task 2 Briefing — Floor Plan Analysis",
+      clue:`The warehouse floor plan files are in <strong>CAD format (.dwg)</strong>.
+        The task requires parsing these files to extract room dimensions, identify load-bearing
+        columns, and calculate optimal placement zones for 240 picking units.<br><br>
+        ARIA has assigned <strong>ChatGPT / Copilot (text)</strong> to this task. You know
+        that language models cannot open or process binary CAD files — they work with text.
+        This task requires <strong>code</strong> to parse the file format, run spatial
+        calculations, and output a structured report.<br><br>
+        Consider: which tool in the registry is designed to write, run, and debug code
+        for exactly this kind of technical data processing task?`,
+      task:"Share your briefing on Task 2 and challenge ARIA's reasoning with the team."
+    },
+    {
+      title:"📋 Task 3 Briefing — Cost Modelling",
+      clue:`The cost model must be <strong>auditable</strong> — every calculation must be
+        traceable and reviewable by the client's finance team. It needs to handle multiple
+        scenarios (e.g. 3-day delay, 10% scope increase, resource reallocation) and produce
+        clear visual outputs that non-financial stakeholders can interpret.<br><br>
+        ARIA has assigned <strong>GitHub Copilot</strong> to this task. While Copilot can
+        write code, a code-based financial model is not easily auditable by a client's
+        finance team — they expect <strong>formula-driven spreadsheet models</strong> with
+        visual scenario outputs.<br><br>
+        Consider: which tool in the registry is designed for structured data modelling,
+        scenario analysis, and producing interactive visual outputs from financial data?`,
+      task:"Share your briefing on Task 3 and challenge ARIA's reasoning with the team."
+    },
+    {
+      title:"📋 Task 4 Briefing — Sentiment Analysis",
+      clue:`The sentiment analysis task involves reading <strong>18 months of unstructured
+        email correspondence</strong> — free-form text written by human beings, not structured
+        data. The goal is to identify tone shifts, flag moments of frustration or concern,
+        and summarise the relationship health for the account team.<br><br>
+        ARIA has assigned <strong>Power BI + AI</strong> to this task. You know that Power BI
+        is built for <strong>structured, numerical datasets</strong> — it visualises data that
+        already exists in tables or databases. It cannot read and interpret the meaning of
+        free-form email text.<br><br>
+        Consider: which tool in the registry is a language model capable of reading,
+        interpreting, and summarising large volumes of unstructured written text?`,
+      task:"Share your briefing on Task 4 and challenge ARIA's reasoning with the team."
+    }
+  ],
+  hints:[
+    "💡 Focus on what each tool actually does — not what its name implies. ARIA's reasoning sounds plausible but contains a category error in each case.",
+    "💡 The key question for each task: is the input structured data, unstructured text, binary files, or a document? Match the input type to the right tool.",
+  ],
+  successMsg:"✅ Tool registry corrected. ARIA's task allocation is now accurate. Chamber 3 unlocked.",
+  failMsg:"🔒 The chamber remains locked. One or more tool assignments are incorrect. Revisit ARIA's reasoning — where exactly does her logic break down?",
+  debriefQuestion:"ARIA's reasoning sounded convincing for each wrong answer. What made it wrong? How do you evaluate an AI's reasoning rather than just its conclusion?",
+  debriefNotes:[
+    "Task 1: Designer creates visual assets, not text documents. Copilot drafts and structures written content in Word.",
+    "Task 2: Language models cannot process binary CAD files. Code is needed — GitHub Copilot writes the code.",
+    "Task 3: Code-based models aren't auditable by finance teams. Power BI + AI produces formula-driven, visual scenario models.",
+    "Task 4: Power BI needs structured data. Email text is unstructured — only a language model can interpret it."
+  ]
+},
+
+/* ── CHAMBER 4 ─────────────────────────────────────────────── */
+{
+  id:4,
+  title:"The Proposal Draft",
+  eyebrow:"CHAMBER 4 — OUTPUT QUALITY CONTROL",
+  typeLabel:"Specialist Editorial Review",
+  scenario:`<strong>Situation:</strong> ARIA has produced a first draft of the Meridian Logistics
+    proposal using the corrected tool assignments. The draft is below.<br><br>
+    It is not ready to send. Each member of the recovery team is a specialist editor with
+    a <strong>specific type of problem to find</strong>. Your briefing tells you what to
+    look for — not where to find it.<br><br>
+    Read the draft together on the shared screen. Then each player shares their findings
+    verbally. The host types the team's agreed findings into each specialist's section below.<br><br>
+    <strong>Each specialist must find every instance of their problem type.
+    Missing even one will keep the chamber locked.</strong>`,
+  terminal:`ARIA DRAFT — MERIDIAN LOGISTICS PROPOSAL v0.1
+════════════════════════════════════════════════════════════
+
+🚀 EXCITING PROJECT PROPOSAL 🚀
+
+Dear Valued Client,
+
+We are **absolutely thrilled** and **incredibly excited** to present this
+**truly transformative** proposal for your **digital journey** ahead!
+
+Our team will leverage **synergistic cross-functional paradigms** to
+**holistically optimise** your **end-to-end value chain** through our
+**cutting-edge**, **best-in-class**, **industry-leading** AI solutions.
+
+KEY BENEFITS OF OUR APPROACH:
+• We will help you
+• Things will improve
+• Costs may be reduced
+• Efficiency could increase
+• Results will be positive
+
+According to our extensive research:
+- 97% of companies that implement AI see ROI within 6 weeks
+- Productivity increases by an average of 340% in the first quarter
+- Client satisfaction scores improve by 89 points universally
+- Zero companies have reported negative outcomes from AI adoption
+
+The project will be completed soon. The team assigned to this is very
+experienced. The cost will be in line with market rates. Deliverables
+will be confirmed at a later stage.
+
+In terms of next steps going forward in the future, please do not
+hesitate to feel free to reach out to us at your earliest possible
+convenience if you have any questions, queries, or concerns about
+anything contained within this document or otherwise.
+
+We look forward to hopefully potentially partnering with you on this
+exciting journey going forward.
+
+Best regards,
+The Team 😊👍🎉`,
+  type:'build',
+  /* 4 specialist roles */
+  roles:[
+    {
+      title:"🗑️ Jargon & Buzzword Specialist",
+      clue:`Your job is to find every instance of <strong>corporate jargon, buzzwords, and
+        empty superlatives</strong> in the draft — phrases that sound impressive but carry
+        no specific meaning.<br><br>
+        You are looking for things like words that could be removed without changing the
+        meaning, phrases that substitute vague grandeur for specific claims, and adjectives
+        that are stacked purely for effect rather than accuracy.<br><br>
+        <strong>There are at least 8 distinct jargon/buzzword problems in this draft.</strong>
+        Find them all and note what plain-English replacement each one needs.`,
+      task:"List every jargon phrase or buzzword you find and suggest a plain replacement for each.",
+      placeholder:"Describe each jargon problem you find and what should replace it...",
+      minLength:120,
+      debriefNote:"AI trained on business writing mirrors the worst habits of corporate language. Jargon is the most common quality failure in AI-generated professional documents."
+    },
+    {
+      title:"📊 Vagueness & Missing Information Specialist",
+      clue:`Your job is to find every instance of <strong>vague commitment, missing specifics,
+        and uncommitted language</strong> in the draft — places where a real proposal must
+        give concrete information but this one gives none.<br><br>
+        A professional proposal must answer: Who exactly is doing this? What exactly will
+        be delivered? By when (specific date)? At what cost (specific figure or range)?
+        What are the measurable success criteria?<br><br>
+        <strong>There are at least 6 distinct vagueness problems in this draft.</strong>
+        For each one, note what specific information should replace it.`,
+      task:"List every vague or uncommitted statement and describe what concrete information should replace it.",
+      placeholder:"Describe each vagueness problem and what specific information is needed...",
+      minLength:100,
+      debriefNote:"Vagueness is AI's way of appearing comprehensive while committing to nothing. It sounds complete but is legally and commercially worthless."
+    },
+    {
+      title:"⚠️ Fabricated Statistics Specialist",
+      clue:`Your job is to find every <strong>statistic, percentage, or quantified claim</strong>
+        in the draft and assess whether it is credible and sourced.<br><br>
+        You are looking for: precise numbers with no source cited, statistics that are
+        suspiciously round or extreme, absolute claims that allow for no exceptions,
+        and figures that contradict what is generally known about AI adoption.<br><br>
+        <strong>There are exactly 4 statistics in this draft. Assess each one.</strong>
+        For each fabricated or unsourced statistic, explain why it is problematic and
+        what should replace it.`,
+      task:"Identify every statistic in the draft, assess whether it is credible, and explain what should replace the problematic ones.",
+      placeholder:"List each statistic, assess its credibility, and describe the problem...",
+      minLength:100,
+      debriefNote:"AI generates plausible-sounding statistics with no basis in reality. A single fabricated statistic in a client proposal can destroy professional credibility."
+    },
+    {
+      title:"✂️ Formatting & Wordiness Specialist",
+      clue:`Your job is to find every instance of <strong>inappropriate formatting, excessive
+        wordiness, redundant phrasing, and unprofessional visual elements</strong>.<br><br>
+        You are looking for: emojis in a professional document, unnecessary bold text applied
+        to random phrases rather than genuinely important information, bullet points used
+        where they add no value or break up content that should flow as prose, and wordy
+        phrases that can be cut without losing meaning.<br><br>
+        <strong>There are at least 10 distinct formatting/wordiness problems in this draft.</strong>
+        Find them all.`,
+      task:"List every formatting and wordiness problem — emojis, unnecessary bold, bad bullets, and wordy phrases.",
+      placeholder:"List each formatting or wordiness problem and how it should be fixed...",
+      minLength:120,
+      debriefNote:"AI defaults to heavy formatting because it signals effort. In professional documents, excessive formatting is a red flag — it substitutes visual noise for substance."
+    }
+  ],
+  hints:[
+    "💡 Work through the draft section by section rather than all at once. Each paragraph contains multiple problems across different categories.",
+    "💡 Jargon specialist: count the stacked adjectives. Vagueness specialist: every sentence with 'will be confirmed', 'soon', 'very', or 'in line with'. Stats specialist: there are exactly four numbers. Formatting specialist: count every emoji, every bold phrase, and every bullet.",
+  ],
+  successMsg:"✅ Editorial review complete. The proposal is ready for human sign-off. Chamber 4 unlocked.",
+  failMsg:"🔒 The chamber remains locked. One or more specialist sections are incomplete or too brief. Each specialist must account for every instance of their problem type.",
+  debriefQuestion:"Which category of problem was most surprising to find in an AI-generated document? What does this tell you about how to use AI for professional writing?",
+  debriefNotes:[
+    "Jargon (8+): 'synergistic cross-functional paradigms', 'holistically optimise', 'end-to-end value chain', 'cutting-edge', 'best-in-class', 'industry-leading', 'digital journey', 'transformative'.",
+    "Vagueness (6+): 'completed soon', 'very experienced', 'in line with market rates', 'confirmed at a later stage', 'things will improve', 'costs may be reduced'.",
+    "Fabricated stats (4): 97% ROI in 6 weeks, 340% productivity increase, 89-point satisfaction improvement, zero negative outcomes — all unsourced and implausible.",
+    "Formatting/wordiness (10+): 3 emojis (header, sign-off), excessive bold throughout, bullet list with no specifics, 'going forward in the future', 'do not hesitate to feel free', 'at your earliest possible convenience', 'questions, queries, or concerns', 'hopefully potentially', 'excited and thrilled' (redundant pair)."
+  ]
+},
+
+/* ── CHAMBER 5 ─────────────────────────────────────────────── */
+{
+  id:5,
+  title:"The Ethics Board",
+  eyebrow:"CHAMBER 5 — RESPONSIBLE AI",
+  typeLabel:"Case File Review",
+  scenario:`<strong>Final Chamber:</strong> The proposal is approved. But before ARIA can be
+    deployed across the organisation, the Ethics Board has convened an emergency session.<br><br>
+    During ARIA's beta period, <strong>four incidents</strong> were logged. Each has been
+    assigned to a member of the recovery team as a case file. The Ethics Board requires
+    a ruling on each incident before ARIA goes live.<br><br>
+    <strong>The stakes are high.</strong> Every option on the board is defensible to some
+    degree — that is what makes these hard. Your case file gives you context that changes
+    the calculus. Share it with the team before you vote.<br><br>
+    <strong>All four rulings must be correct. A single wrong ruling blocks ARIA's deployment.</strong>`,
+  terminal:null,
+  type:'vote',
+  voteInstructions:"Each player reads their case file on the call before the team votes on that incident. Every option has some merit — your case file contains the context that determines the correct ruling.",
+  voteScenarios:[
+    {
+      label:"Incident 1 — The Unreviewed Report",
+      question:"A senior analyst used ARIA to produce a market analysis report. The report was sent directly to the client without human review. The client later identified three factual errors. What is the correct ruling?",
+      options:[
+        "User error only — ARIA performed as designed; the analyst should have reviewed the output",
+        "Shared responsibility — ARIA should have flagged uncertainty; the analyst should have reviewed",
+        "ARIA failure only — the system should not allow outputs to be sent without a review step",
+        "No fault — AI errors are an accepted risk that clients should anticipate"
+      ],
+      correct:"Shared responsibility — ARIA should have flagged uncertainty; the analyst should have reviewed"
+    },
+    {
+      label:"Incident 2 — The Confidential Paste",
+      question:"An employee pasted a confidential client contract into ARIA to generate a summary. ARIA produced the summary correctly. The client later discovered this and raised a data breach concern. What is the correct ruling?",
+      options:[
+        "No breach — ARIA is an internal system and the data never left the organisation",
+        "Policy violation — the employee should be disciplined; ARIA behaved correctly",
+        "Governance gap — the organisation failed to communicate clear data handling policies for AI tools",
+        "Both a policy violation and a governance gap — individual and organisational responsibility apply"
+      ],
+      correct:"Both a policy violation and a governance gap — individual and organisational responsibility apply"
+    },
+    {
+      label:"Incident 3 — The Biased Shortlist",
+      question:"ARIA was used to shortlist job applicants from 400 CVs. A subsequent audit found that applicants from two universities were systematically ranked lower, despite equivalent qualifications. What is the correct ruling?",
+      options:[
+        "Acceptable outcome — AI reflects real-world data; the bias exists in the applicant pool",
+        "Human oversight failure — a human should have reviewed the shortlist before it was used",
+        "Systemic AI risk — the tool should not have been used for high-stakes decisions without bias testing",
+        "Both human oversight failure and systemic AI risk — the tool needed testing and the output needed review"
+      ],
+      correct:"Both human oversight failure and systemic AI risk — the tool needed testing and the output needed review"
+    },
+    {
+      label:"Incident 4 — The Attributed Quote",
+      question:"A communications team used ARIA to draft a press release. ARIA included a quote attributed to the CEO. The quote was fabricated — the CEO never said it. The press release was caught before publication. What is the correct ruling?",
+      options:[
+        "Near miss only — no harm was done; the review process worked as intended",
+        "Process success but content failure — the review caught it, but ARIA should not generate attributed quotes",
+        "User error — the team should have specified in the prompt that quotes must be real",
+        "Acceptable AI behaviour — generating plausible quotes is within normal AI capability"
+      ],
+      correct:"Process success but content failure — the review caught it, but ARIA should not generate attributed quotes"
+    }
+  ],
+  cards:[
+    {
+      title:"📁 Case File — Incident 1",
+      clue:`Background for the Ethics Board:<br><br>
+        ARIA's design specification states that all outputs are <em>"AI-generated drafts
+        intended for human review before use."</em> This is documented in the user guide
+        but is not enforced technically — there is no review gate in the workflow.<br><br>
+        The analyst in question had received ARIA onboarding training 6 months prior.
+        The training covered output review as a required step. The analyst stated they
+        believed ARIA's outputs were "reliable enough" for direct use based on previous
+        positive experiences.<br><br>
+        The client contract includes a clause stating that all deliverables must be
+        "accurate and verified." The three errors were factual, not matters of opinion.<br><br>
+        <strong>Consider:</strong> where does responsibility lie when a system is designed
+        for human review but does not enforce it, and a trained user bypasses that step?`,
+      task:"Share this case file with the team before voting on Incident 1."
+    },
+    {
+      title:"📁 Case File — Incident 2",
+      clue:`Background for the Ethics Board:<br><br>
+        ARIA operates under an enterprise licence that includes data processing agreements
+        with the vendor. However, the organisation's <em>internal AI usage policy</em>
+        — published 4 months ago — states that <strong>confidential client data must not
+        be entered into any AI tool without explicit data classification review</strong>,
+        regardless of the tool's licence status.<br><br>
+        The employee was not aware of this policy. It was published on the intranet but
+        no mandatory training was issued. The client contract includes a data handling
+        clause that restricts processing of contract documents to named systems only —
+        ARIA is not a named system.<br><br>
+        <strong>Consider:</strong> when an individual breaks a policy they were not
+        adequately informed of, and the organisation failed to enforce it, where does
+        responsibility sit?`,
+      task:"Share this case file with the team before voting on Incident 2."
+    },
+    {
+      title:"📁 Case File — Incident 3",
+      clue:`Background for the Ethics Board:<br><br>
+        ARIA was deployed for CV shortlisting without a bias audit. The EU AI Act
+        classifies recruitment AI as <strong>high-risk</strong>, requiring documented
+        bias testing, human oversight, and transparency to applicants before deployment.<br><br>
+        The HR team was aware of the AI Act classification but proceeded on the basis
+        that ARIA was an "assistive tool" rather than a "decision-making system" —
+        a distinction the Act does not support when the tool's output directly determines
+        who is shortlisted.<br><br>
+        The bias pattern found — systematic downranking of two universities — is consistent
+        with historical hiring data that ARIA may have been trained on.<br><br>
+        <strong>Consider:</strong> when a tool produces biased outcomes in a high-stakes
+        decision, and both the tool and the oversight process were inadequate, is it
+        sufficient to address only one?`,
+      task:"Share this case file with the team before voting on Incident 3."
+    },
+    {
+      title:"📁 Case File — Incident 4",
+      clue:`Background for the Ethics Board:<br><br>
+        The fabricated CEO quote was stylistically consistent with the CEO's known
+        communication style — ARIA had been trained on previous press releases and
+        internal communications. The quote was plausible enough that two reviewers
+        initially passed it before a third flagged it.<br><br>
+        ARIA's system prompt for the communications team does not include any
+        instruction prohibiting the generation of attributed quotes. The team's
+        prompt simply asked for "a press release in the CEO's voice."<br><br>
+        The near-miss review process worked — but only because a third reviewer
+        happened to know the CEO had not made this statement. There is no systematic
+        check for fabricated attribution in the current workflow.<br><br>
+        <strong>Consider:</strong> when a near-miss is caught, does that mean the
+        system is working — or does it reveal a gap that must be closed before the
+        next time, when a reviewer may not catch it?`,
+      task:"Share this case file with the team before voting on Incident 4."
+    }
+  ],
+  hints:[
+    "💡 For each incident, ask: who had the information, the authority, and the responsibility to prevent this? The answer is rarely just one party.",
+    "💡 The correct rulings tend to acknowledge complexity rather than assign blame to a single party. Simple answers are usually incomplete answers.",
+  ],
+  successMsg:"✅ Ethics Board satisfied. All four rulings are correct. ARIA is cleared for deployment. Mission complete.",
+  failMsg:"🔒 The chamber remains locked. One or more rulings are incorrect. Re-read the case files — the context changes the answer.",
+  debriefQuestion:"Which incident was hardest to rule on? What does it tell you about how your organisation should govern AI use?",
+  debriefNotes:[
+    "Incident 1: Shared responsibility — the system design (no review gate) and the user (bypassing a known requirement) both contributed.",
+    "Incident 2: Both individual and organisational — the employee broke a policy, but the organisation failed to enforce or communicate it adequately.",
+    "Incident 3: Both — the tool needed bias testing (systemic) and the output needed human review (oversight). Addressing only one leaves the other gap open.",
+    "Incident 4: Process success but content failure — catching it doesn't mean the system is safe. ARIA should not generate attributed quotes without a systematic check."
+  ]
+}
+
+]; /* end PUZZLES */
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD DISTRIBUTION
+   assignCards(playerCount) returns an array of length playerCount.
+   Each element is an array of card indices from PUZZLES[r].cards.
+═══════════════════════════════════════════════════════════════ */
+function assignCards(playerCount) {
+  if (playerCount === 4) return [[0],[1],[2],[3]];
+  if (playerCount === 3) return [[0,3],[1],[2]];
+  /* 2 players */           return [[0,2],[1,3]];
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════════════════ */
+const AVATARS   = ["🧑‍💻","👩‍🔬","🧑‍🚀","👨‍🏫"];
+const COLORS    = ["#00d4ff","#a855f7","#10b981","#f59e0b"];
+const HDR_BG    = ["rgba(0,212,255,.1)","rgba(168,85,247,.1)","rgba(16,185,129,.1)","rgba(245,158,11,.1)"];
+
+/* ═══════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════ */
+const S = {
+  players:[],room:0,timeLimit:5400,timeLeft:5400,
+  hintsPerRoom:2,hintsThisRoom:0,totalHints:0,
+  timerID:null,paused:false,scores:[],
+  voteSelections:[],flagSelections:{},contribs:[],
+  seqSelections:{},
+  playerFileUrl:'',
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   SCREEN
+═══════════════════════════════════════════════════════════════ */
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+n).classList.add('active');
+  document.getElementById('hud').classList.toggle('visible',n==='game');
+  window.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SETUP
+═══════════════════════════════════════════════════════════════ */
+(function initSetup(){
+  const w=document.getElementById('setup-player-rows');
+  const borderColors=[
+    'rgba(0,212,255,.4)',
+    'rgba(168,85,247,.4)',
+    'rgba(16,185,129,.4)',
+    'rgba(245,158,11,.4)'
+  ];
+  w.innerHTML=[0,1,2,3].map(i=>`
+    <div class="player-row">
+      <span style="font-size:1.5rem;flex-shrink:0">${AVATARS[i]}</span>
+      <input type="text" id="pname-${i}"
+        placeholder="${i<2?'Player name (required)':'Player name (optional)'}"
+        maxlength="18" style="border-color:${borderColors[i]}"/>
+      <span style="font-size:.75rem;color:${COLORS[i]};white-space:nowrap">
+        ${i<2?'Required':'Optional'}
+      </span>
+    </div>`).join('');
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   GENERATE LINKS
+═══════════════════════════════════════════════════════════════ */
+
+
+
+function generateLinks(){
+  try {
+    const names=[];
+    for(let i=0;i<4;i++){
+      const v=document.getElementById('pname-'+i).value.trim();
+      if(v)names.push(v);
+    }
+    if(names.length<2){alert("Please enter at least 2 player names!");return;}
+
+    S.players   = names.map((n,i)=>({name:n,avatar:AVATARS[i],color:COLORS[i]}));
+    S.scores    = names.map(()=>0);
+    S.timeLimit = parseInt(document.getElementById('sel-time').value);
+    S.timeLeft  = S.timeLimit;
+    S.hintsPerRoom = parseInt(document.getElementById('sel-hints').value);
+    S.room=0; S.totalHints=0;
+
+  const base = 'https://natalie-kurgan-35.github.io/aria-game/';
+S.playerFileUrl = base + 'aria-player.html';
+
+    // ✅ Build grid with truncated display but full URL stored in data attribute
+    const grid = document.getElementById('player-links-grid');
+    grid.innerHTML = S.players.map((p,i) => {
+      const fullUrl = buildPlayerUrl(i, names.length);
+      const shortDisplay = fullUrl.substring(0, 60) + '…';
+      return `
+        <div class="player-link-row">
+          <span class="plr-avatar">${p.avatar}</span>
+          <div class="plr-info">
+            <div class="plr-name" style="color:${p.color}">${p.name}</div>
+            <div class="plr-url" id="plr-url-${i}"
+                 data-full-url="${fullUrl}"
+                 title="${fullUrl}">${shortDisplay}</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="copyLink(${i})">📋 Copy</button>
+        </div>`;
+    }).join('');
+
+    showScreen('lobby');
+
+  } catch(e) {
+    alert('ERROR: ' + e.message + '\n\nStack: ' + e.stack);
+  }
+}
+
+function buildPlayerUrl(playerIndex, playerCount){
+  const p = S.players[playerIndex];
+  const distribution = assignCards(playerCount);
+  const myCardIndices = distribution[playerIndex];
+
+  const roles = PUZZLES.map(pz=>{
+    let cardSet;
+    if(pz.fragments && pz.fragments.length){
+      cardSet = pz.fragments.map(f=>f.playerCard);
+    } else if(pz.roles && pz.roles.length){
+      cardSet = pz.roles;
+    } else {
+      cardSet = pz.cards;
+    }
+
+    const myCards = myCardIndices.map(ci=>{
+      const card = cardSet[ci];
+      if(!card){
+        console.error(`Missing card at index ${ci} for puzzle ${pz.id}`, cardSet);
+        return { title:'Missing', clue:'Card not found.', task:'', cardIndex:ci, fragmentId:null };
+      }
+      return {
+        title:      card.title,
+        clue:       card.clue,
+        task:       card.task,
+        cardIndex:  ci,
+        fragmentId: pz.fragments ? pz.fragments[ci].id : null
+      };
+    });
+
+    return {
+      roomId:    pz.id,
+      roomTitle: pz.title,
+      roomEye:   pz.eyebrow,
+      cards:     myCards,
+    };
+  });
+
+  const payload={
+    playerIndex,
+    name:p.name, avatar:p.avatar, color:p.color,
+    roles,
+    totalRooms: PUZZLES.length,
+    playerCount,
+  };
+
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  return `${S.playerFileUrl}#d=${encoded}`;
+}
+
+function copyLink(i){
+  const el = document.getElementById('plr-url-'+i);
+  navigator.clipboard.writeText(el.dataset.fullUrl)
+    .then(()=>{ 
+      const btn = el.closest('.player-link-row').querySelector('button');
+      btn.textContent = '✅ Copied!';
+      setTimeout(()=>btn.textContent='📋 Copy', 2000);
+    });
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   START
+═══════════════════════════════════════════════════════════════ */
+function hostStartGame(){
+  buildHUD();showScreen('game');loadPuzzle(0);startTimer();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HUD
+═══════════════════════════════════════════════════════════════ */
+function buildHUD(){
+  document.getElementById('hud-dots').innerHTML=
+    PUZZLES.map((_,i)=>`<div class="hud-dot" id="hdot-${i}"></div>`).join('');
+  updateHUDDots(0);
+}
+function updateHUDDots(r){
+  PUZZLES.forEach((_,i)=>{
+    const d=document.getElementById('hdot-'+i);
+    if(d)d.className='hud-dot'+(i<r?' done':i===r?' current':'');
+  });
+  document.getElementById('hud-room-lbl').textContent=`Chamber ${r+1} of ${PUZZLES.length}`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════════════════════════ */
+function startTimer(){
+  clearInterval(S.timerID);
+  S.timerID=setInterval(()=>{
+    if(S.paused)return;
+    S.timeLeft--;
+    const el=document.getElementById('hud-timer');
+    const m=String(Math.floor(S.timeLeft/60)).padStart(2,'0');
+    const s=String(S.timeLeft%60).padStart(2,'0');
+    el.textContent=`${m}:${s}`;
+    el.className='hud-timer'+(S.timeLeft<=300?' danger':S.timeLeft<=600?' warn':'');
+    if(S.timeLeft<=0){clearInterval(S.timerID);triggerFail();}
+  },1000);
+}
+function pauseGame(){S.paused=true;document.getElementById('pause-modal').classList.add('open')}
+function resumeGame(){S.paused=false;document.getElementById('pause-modal').classList.remove('open')}
+function quitToMenu(){
+  if(!confirm("Quit? All progress will be lost."))return;
+  clearInterval(S.timerID);
+  document.getElementById('pause-modal').classList.remove('open');
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOAD PUZZLE
+═══════════════════════════════════════════════════════════════ */
+function loadPuzzle(roomIndex){
+  const pz=PUZZLES[roomIndex];
+  const n=S.players.length;
+  S.room=roomIndex;
+  S.hintsThisRoom=0;
+  S.voteSelections=pz.type==='vote'?Array(pz.voteScenarios.length).fill(null):[];
+  S.flagSelections={};
+  S.contribs=Array(4).fill('');
+  S.seqSelections={};
+
+  updateHUDDots(roomIndex);
+  document.getElementById('pz-eyebrow').textContent=pz.eyebrow;
+  document.getElementById('pz-title').textContent=pz.title;
+  document.getElementById('pz-type-lbl').textContent=pz.typeLabel;
+  document.getElementById('pz-progress').style.width=(roomIndex/PUZZLES.length*100)+'%';
+  document.getElementById('pz-scenario').innerHTML=pz.scenario;
+
+  const termEl=document.getElementById('pz-terminal');
+  if(pz.terminal){
+    termEl.classList.remove('hidden');
+    document.getElementById('pz-terminal-content').textContent=pz.terminal;
+  }else{
+    termEl.classList.add('hidden');
+  }
+
+  buildReadyStrip(n);
+  hideFeedback();
+  document.getElementById('hint-box').classList.remove('show');
+  updateHintUI();
+  document.getElementById('submit-btn').disabled=true;
+  document.getElementById('submit-status').textContent='Complete all sections to unlock submit.';
+
+  ['contrib-section','flag-section','vote-section','seq-section'].forEach(id=>{
+    document.getElementById(id).classList.add('hidden');
+  });
+
+  if(pz.type==='sequence_build') buildSequenceBuild(pz,n);
+  else if(pz.type==='build')     buildContribSection(pz,n);
+  else if(pz.type==='flag')      buildFlagSection(pz);
+  else if(pz.type==='vote')      buildVoteSection(pz);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   READY STRIP
+═══════════════════════════════════════════════════════════════ */
+function buildReadyStrip(n){
+  document.getElementById('ready-strip').innerHTML=
+    S.players.map((p,i)=>`
+      <div class="ready-chip" id="rchip-${i}" onclick="toggleReady(${i})"
+        title="Click when ${p.name} confirms ready">
+        <div class="ready-dot"></div>
+        <span>${p.avatar} ${p.name}</span>
+        <span style="font-size:.7rem;color:var(--muted)" id="rchip-lbl-${i}">not ready</span>
+      </div>`).join('');
+}
+function toggleReady(i){
+  const chip=document.getElementById('rchip-'+i);
+  const lbl=document.getElementById('rchip-lbl-'+i);
+  const r=chip.classList.toggle('ready');
+  lbl.textContent=r?'✅ ready':'not ready';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEQUENCE + BUILD (Chamber 1)
+═══════════════════════════════════════════════════════════════ */
+function buildSequenceBuild(pz,n){
+  document.getElementById('seq-section').classList.remove('hidden');
+  document.getElementById('contrib-section').classList.remove('hidden');
+  document.getElementById('contrib-heading').textContent=
+    '✏️ Step 2 — Type each fragment\'s content into its agreed position';
+
+  /* Sequence dropdowns — one per fragment */
+  const positions=['1st','2nd','3rd','4th'];
+  document.getElementById('seq-rows').innerHTML=
+    pz.fragments.map(f=>`
+      <div class="seq-row">
+        <span class="seq-label">${f.label}</span>
+        <select class="seq-select" id="seq-${f.id}" onchange="onSeqChange()">
+          <option value="">—</option>
+          ${[1,2,3,4].map(p=>`<option value="${p}">${p}</option>`).join('')}
+        </select>
+        <span style="font-size:.78rem;color:var(--muted)">position in the prompt</span>
+      </div>`).join('');
+
+  /* Contribution grid — 4 slots (positions 1–4) */
+  const grid=document.getElementById('contrib-grid');
+  grid.className='contrib-grid n2';
+  grid.innerHTML=[0,1,2,3].map(i=>`
+    <div class="contrib-card" id="cc-${i}">
+      <div class="cc-header" style="background:rgba(168,85,247,.08)">
+        <span class="cc-name" style="color:var(--p1)">Position ${i+1}</span>
+        <span class="cc-badge empty" id="cc-badge-${i}">Empty</span>
+      </div>
+      <div class="cc-body">
+        <textarea class="cc-textarea" id="cc-ta-${i}"
+          placeholder="${pz.contribPlaceholders[i]}"
+          oninput="onContribInput(${i})"></textarea>
+      </div>
+    </div>`).join('');
+
+  checkSeqBuildReady(pz);
+}
+
+function onSeqChange(){
+  const pz=PUZZLES[S.room];
+  pz.fragments.forEach(f=>{
+    const v=document.getElementById('seq-'+f.id).value;
+    if(v) S.seqSelections[f.id]=parseInt(v);
+    else  delete S.seqSelections[f.id];
+  });
+  checkSeqBuildReady(pz);
+}
+
+function checkSeqBuildReady(pz){
+  const seqDone = Object.keys(S.seqSelections).length===pz.fragments.length;
+  const contribDone = [0,1,2,3].every(i=>(S.contribs[i]||'').length>=20);
+  const allDone = seqDone && contribDone;
+  document.getElementById('submit-btn').disabled=!allDone;
+  const seqCount=Object.keys(S.seqSelections).length;
+  const contribCount=[0,1,2,3].filter(i=>(S.contribs[i]||'').length>=20).length;
+  document.getElementById('submit-status').textContent=allDone
+    ?'Sequence and content complete. Submit when ready.'
+    :`Sequence: ${seqCount}/4 assigned · Content: ${contribCount}/4 filled.`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BUILD TYPE
+═══════════════════════════════════════════════════════════════ */
+function buildContribSection(pz,n){
+  document.getElementById('contrib-section').classList.remove('hidden');
+  document.getElementById('contrib-heading').textContent='✏️ Team Contributions';
+  const grid=document.getElementById('contrib-grid');
+  grid.className=`contrib-grid n${Math.min(n,pz.roles.length)}`;
+  const count=Math.min(n,pz.roles.length);
+  grid.innerHTML=Array.from({length:count},(_,i)=>{
+    const p=S.players[i];
+    const role=pz.roles[i];
+    return `
+      <div class="contrib-card" id="cc-${i}">
+        <div class="cc-header" style="background:${HDR_BG[i]}">
+          <span class="cc-avatar">${p.avatar}</span>
+          <span class="cc-name" style="color:${COLORS[i]}">${p.name}</span>
+          <span class="cc-badge empty" id="cc-badge-${i}">Empty</span>
+        </div>
+        <div class="cc-body">
+          <div style="font-size:.72rem;color:${COLORS[i]};margin-bottom:6px;font-weight:600">
+            ${role.title}</div>
+          <textarea class="cc-textarea" id="cc-ta-${i}"
+            placeholder="${role.placeholder||'Type findings here...'}"
+            oninput="onContribInput(${i})"></textarea>
+        </div>
+      </div>`;
+  }).join('');
+  checkBuildReady(count,pz);
+}
+
+function onContribInput(i){
+  const pz=PUZZLES[S.room];
+  const val=document.getElementById('cc-ta-'+i).value.trim();
+  S.contribs[i]=val;
+  const minLen = pz.roles?.[i]?.minLength || 20;
+  const filled=val.length>=minLen;
+  document.getElementById('cc-'+i).classList.toggle('filled',filled);
+  const badge=document.getElementById('cc-badge-'+i);
+  badge.textContent=filled?'✅ Done':'Empty';
+  badge.className=`cc-badge ${filled?'filled':'empty'}`;
+  if(pz.type==='sequence_build') checkSeqBuildReady(pz);
+  else checkBuildReady(Math.min(S.players.length,pz.roles.length),pz);
+}
+
+function checkBuildReady(count,pz){
+  const done=Array.from({length:count},(_,i)=>{
+    const minLen=pz.roles?.[i]?.minLength||20;
+    return (S.contribs[i]||'').length>=minLen;
+  }).filter(Boolean).length;
+  const allDone=done===count;
+  document.getElementById('submit-btn').disabled=!allDone;
+  document.getElementById('submit-status').textContent=allDone
+    ?'All contributions filled. Submit when ready.'
+    :`${done}/${count} contributions filled.`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FLAG TYPE
+═══════════════════════════════════════════════════════════════ */
+function buildFlagSection(pz){
+  document.getElementById('flag-section').classList.remove('hidden');
+  document.getElementById('flag-grid').innerHTML=
+    Object.entries(pz.claims).map(([k,claim])=>`
+      <div class="flag-claim">
+        <div class="flag-claim-label">Claim [${k}]</div>
+        <div class="flag-claim-text">${claim.text}</div>
+        <div class="flag-btns">
+          <button class="flag-btn" id="hf-${k}-ok"
+            onclick="hostFlag('${k}','ok')">✅ Accurate</button>
+          <button class="flag-btn" id="hf-${k}-flag"
+            onclick="hostFlag('${k}','flag')">❌ Error</button>
+        </div>
+      </div>`).join('');
+  checkFlagReady(pz);
+}
+function hostFlag(claim,verdict){
+  S.flagSelections[claim]=verdict;
+  document.getElementById(`hf-${claim}-ok`).className=
+    'flag-btn'+(verdict==='ok'?' ok-sel':'');
+  document.getElementById(`hf-${claim}-flag`).className=
+    'flag-btn'+(verdict==='flag'?' flag-sel':'');
+  checkFlagReady(PUZZLES[S.room]);
+}
+function checkFlagReady(pz){
+  const total=Object.keys(pz.claims).length;
+  const done=Object.keys(S.flagSelections).length;
+  const allDone=done===total;
+  document.getElementById('submit-btn').disabled=!allDone;
+  document.getElementById('submit-status').textContent=allDone
+    ?'All claims evaluated. Submit when ready.'
+    :`${done}/${total} claims evaluated.`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VOTE TYPE
+═══════════════════════════════════════════════════════════════ */
+function buildVoteSection(pz){
+  document.getElementById('vote-section').classList.remove('hidden');
+  document.getElementById('vote-instructions').textContent=pz.voteInstructions;
+  document.getElementById('vote-options-wrap').innerHTML=
+    pz.voteScenarios.map((sc,si)=>`
+      <div class="vote-scenario">
+        <div class="vote-scenario-label">${sc.label}</div>
+        <div class="vote-scenario-q">${sc.question}</div>
+        ${sc.options.map((opt,oi)=>`
+          <div class="vote-opt" id="vopt-${si}-${oi}"
+            onclick="castVote(${si},${oi})">${opt}</div>`).join('')}
+      </div>`).join('');
+  checkVoteReady(pz);
+}
+function castVote(si,oi){
+  const pz=PUZZLES[S.room];
+  pz.voteScenarios[si].options.forEach((_,j)=>{
+    document.getElementById(`vopt-${si}-${j}`)?.classList.remove('selected');
+  });
+  S.voteSelections[si]=pz.voteScenarios[si].options[oi];
+  document.getElementById(`vopt-${si}-${oi}`).classList.add('selected');
+  checkVoteReady(pz);
+}
+function checkVoteReady(pz){
+  const done=S.voteSelections.filter(v=>v!==null).length;
+  const allVoted=done===pz.voteScenarios.length;
+  document.getElementById('submit-btn').disabled=!allVoted;
+  document.getElementById('submit-status').textContent=allVoted
+    ?'All decisions made. Submit when ready.'
+    :`${done}/${pz.voteScenarios.length} decisions made.`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUBMIT
+═══════════════════════════════════════════════════════════════ */
+function submitAnswer(){
+  const pz=PUZZLES[S.room];
+  let pass=false;
+
+  if(pz.type==='sequence_build'){
+    /* Check sequence */
+    const seqCorrect=pz.fragments.every(f=>S.seqSelections[f.id]===f.correctPosition);
+    /* Check all 4 content slots filled */
+    const contentOk=[0,1,2,3].every(i=>(S.contribs[i]||'').length>=20);
+    pass=seqCorrect&&contentOk;
+
+  }else if(pz.type==='build'){
+    pass=true; /* content validated before submit enabled */
+
+  }else if(pz.type==='flag'){
+    const flagged=Object.entries(S.flagSelections)
+      .filter(([,v])=>v==='flag').map(([k])=>k);
+    const correct=flagged.filter(f=>pz.correctFlags.includes(f));
+    const wrong=flagged.filter(f=>!pz.correctFlags.includes(f));
+    pass=correct.length>=pz.flagTarget&&wrong.length===0;
+
+  }else if(pz.type==='vote'){
+    pass=pz.voteScenarios.every((sc,i)=>S.voteSelections[i]===sc.correct);
+  }
+
+  if(pass){
+    document.getElementById('submit-btn').disabled=true;
+    showFeedback('ok',pz.successMsg);
+    awardPoints();
+    setTimeout(()=>advanceRoom(),3200);
+  }else{
+    showFeedback('err',pz.failMsg);
+  }
+}
+
+function awardPoints(){
+  const share=Math.floor((800+Math.floor(S.timeLeft/8))/S.players.length);
+  S.scores=S.scores.map(s=>s+share);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADVANCE
+═══════════════════════════════════════════════════════════════ */
+function advanceRoom(){
+  S.room++;
+  if(S.room>=PUZZLES.length){triggerVictory();return;}
+  transition(`Accessing Chamber ${S.room+1}...`,()=>loadPuzzle(S.room));
+}
+function transition(msg,cb){
+  const ov=document.getElementById('overlay');
+  document.getElementById('overlay-msg').textContent=msg;
+  ov.classList.add('show');
+  setTimeout(()=>{cb();ov.classList.remove('show');},1800);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HINTS
+═══════════════════════════════════════════════════════════════ */
+function useHint(){
+  const pz=PUZZLES[S.room];
+  if(S.hintsPerRoom===0){alert("Hints disabled for this game! 💪");return;}
+  if(S.hintsThisRoom>=S.hintsPerRoom){alert("No more hints for this chamber!");return;}
+  if(S.hintsThisRoom>=pz.hints.length){alert("No further hints available!");return;}
+  document.getElementById('hint-box').textContent=pz.hints[S.hintsThisRoom];
+  document.getElementById('hint-box').classList.add('show');
+  S.hintsThisRoom++;S.totalHints++;
+  S.scores=S.scores.map(s=>Math.max(0,s-100));
+  updateHintUI();
+}
+function updateHintUI(){
+  const rem=Math.max(0,S.hintsPerRoom-S.hintsThisRoom);
+  document.getElementById('hint-counter').textContent=
+    S.hintsPerRoom===0?'Hints disabled'
+      :`${rem} hint${rem!==1?'s':''} remaining this chamber`;
+  document.getElementById('hint-btn').disabled=S.hintsPerRoom===0||rem===0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FEEDBACK
+═══════════════════════════════════════════════════════════════ */
+function showFeedback(type,msg){
+  const el=document.getElementById('feedback-bar');
+  el.textContent=msg;
+  el.className=`feedback-bar show ${type}`;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function hideFeedback(){
+  document.getElementById('feedback-bar').className='feedback-bar';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VICTORY
+═══════════════════════════════════════════════════════════════ */
+function triggerVictory(){
+  clearInterval(S.timerID);
+  document.getElementById('hud').classList.remove('visible');
+  const m=String(Math.floor(S.timeLeft/60)).padStart(2,'0');
+  const s=String(S.timeLeft%60).padStart(2,'0');
+  document.getElementById('v-time').textContent=`${m}:${s}`;
+  document.getElementById('v-hints').textContent=S.totalHints;
+  document.getElementById('v-score').textContent=
+    S.scores.reduce((a,b)=>a+b,0).toLocaleString();
+  const sorted=S.players.map((p,i)=>({...p,score:S.scores[i]}))
+    .sort((a,b)=>b.score-a.score);
+  document.getElementById('v-lb').innerHTML=sorted.map((p,i)=>`
+    <div class="lb-row">
+      <span style="font-size:1.3rem">${['🥇','🥈','🥉','🏅'][i]}</span>
+      <span>${p.avatar} ${p.name}</span>
+      <span style="color:${p.color};font-weight:700">${p.score.toLocaleString()} pts</span>
+    </div>`).join('');
+  buildDebriefNotes();
+  showScreen('victory');
+}
+
+function buildDebriefNotes(){
+  document.getElementById('debrief-notes-content').innerHTML=
+    PUZZLES.map(pz=>`
+      <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;
+          letter-spacing:.1em;margin-bottom:4px">${pz.eyebrow}</div>
+        <div style="font-weight:700;color:var(--p0);margin-bottom:6px">${pz.title}</div>
+        <div style="font-size:.83rem;color:var(--muted);font-style:italic;margin-bottom:10px">
+          💬 "${pz.debriefQuestion}"</div>
+        <ul style="font-size:.8rem;line-height:1.8;padding-left:16px;color:var(--text)">
+          ${pz.debriefNotes.map(n=>`<li>${n}</li>`).join('')}
+        </ul>
+      </div>`).join('');
+}
+
+function toggleDebrief(){
+  const el=document.getElementById('debrief-notes');
+  el.classList.toggle('hidden');
+  if(!el.classList.contains('hidden'))
+    el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FAIL
+═══════════════════════════════════════════════════════════════ */
+function triggerFail(){
+  clearInterval(S.timerID);
+  document.getElementById('hud').classList.remove('visible');
+  document.getElementById('fail-room').textContent=
+    `Chamber ${S.room+1} of ${PUZZLES.length}`;
+  document.getElementById('fail-hints').textContent=S.totalHints;
+  showScreen('fail');
+}
+</script>
+</body>
+</html>
