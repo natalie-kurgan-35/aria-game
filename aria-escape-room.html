@@ -551,10 +551,10 @@ const PUZZLES = [
   id:1,
   title:"The Corrupted Prompt",
   eyebrow:"CHAMBER 1 — PROMPT RECONSTRUCTION",
-  typeLabel:"Sequence + Build",
-  scenario:"<strong>Situation:</strong> ARIA's language core crashed mid-task. Engineers recovered four fragments of the original prompt that caused the crash — but they were scrambled in the process. The fragments have been distributed across the recovery team.<br><br><strong>Your task has two parts.</strong> First, agree the correct logical order of the four fragments (1 = first, 4 = last). Then, the host types each player's fragment content into the correct slot. Submit only when both the sequence and the content are complete.<br><br><strong>Warning:</strong> A plausible-but-wrong sequence will be rejected. Think carefully about how a well-structured AI prompt is built before you commit to an order.",
+  typeLabel:"Sequence",
+  scenario:"<strong>Situation:</strong> ARIA's language core crashed mid-task. Engineers recovered four fragments of the original prompt that caused the crash — but they were scrambled in the process. The fragments have been distributed across the recovery team.<br><br><strong>Your task:</strong> Agree the correct logical order of the four fragments (1 = first, 4 = last) and set the dropdowns accordingly. <br><br><strong>Warning:</strong> A plausible-but-wrong sequence will be rejected. Think carefully about how a well-structured AI prompt is built before you commit to an order.",
   terminal:null,
-  type:"sequence_build",
+  type:"sequence",
   fragments:[
     {
       id:"A",
@@ -597,25 +597,13 @@ const PUZZLES = [
       }
     }
   ],
-  contribLabels:[
-    "Position 1 — Fragment content",
-    "Position 2 — Fragment content",
-    "Position 3 — Fragment content",
-    "Position 4 — Fragment content"
-  ],
-  contribPlaceholders:[
-    "The type of content to put first...",
-    "The type of content to put second...",
-    "The type of content to put third...",
-    "The type of content to put fourth..."
-  ],
   correctSequence:["C","A","D","B"],
   hints:[
     "Think about how you would brief a human assistant. What do they need to know first — the task, the audience, the facts, or the format?",
     "The correct order follows the logic: what to do, then who for and how, then what content to include, then how to structure the output."
   ],
   successMsg:"✅ Prompt reconstructed. ARIA's language core is rebooting. Chamber 1 unlocked.",
-  failMsg:"🔒 The chamber remains locked. Either the sequence is wrong, or one or more content fields are incomplete. Review and try again.",
+  failMsg:"🔒 The chamber remains locked. The sequence is wrong. Review your reasoning and try again.",
   debriefQuestion:"Why does the order of a prompt matter? What happened when you put the format instructions before the task?",
   debriefNotes:[
     "Prompt structure follows the same logic as a good brief: task first, then context, then content, then constraints.",
@@ -624,7 +612,6 @@ const PUZZLES = [
     "Output constraints are the last thing the AI needs — they shape the final output, not the thinking."
   ]
 },
-
 {
   id:2,
   title:"The Hallucinated Email",
@@ -1141,12 +1128,35 @@ function loadPuzzle(roomIndex) {
     document.getElementById(id).classList.add("hidden");
   });
 
-  if      (pz.type === "sequence_build") buildSequenceBuild(pz);
-  else if (pz.type === "build")          buildContribSection(pz);
-  else if (pz.type === "flag")           buildFlagSection(pz);
-  else if (pz.type === "vote")           buildVoteSection(pz);
+  if      (pz.type === "sequence") buildSequenceOnly(pz);
+  else if (pz.type === "build")    buildContribSection(pz);
+  else if (pz.type === "flag")     buildFlagSection(pz);
+  else if (pz.type === "vote")     buildVoteSection(pz);
 }
 
+function buildSequenceOnly(pz) {
+  document.getElementById("seq-section").classList.remove("hidden");
+  document.getElementById("seq-rows").innerHTML = pz.fragments.map(function(f) {
+    return "<div class=\"seq-row\">" +
+      "<span class=\"seq-label\">" + f.label + "</span>" +
+      "<select class=\"seq-select\" id=\"seq-" + f.id + "\" onchange=\"onSeqChange()\">" +
+      "<option value=\"\">—</option>" +
+      [1,2,3,4].map(function(p){ return "<option value=\"" + p + "\">" + p + "</option>"; }).join("") +
+      "</select>" +
+      "<span style=\"font-size:.78rem;color:var(--muted)\">position in the prompt</span>" +
+      "</div>";
+  }).join("");
+  checkSeqOnlyReady(pz);
+}
+
+function checkSeqOnlyReady(pz) {
+  var done = Object.keys(S.seqSelections).length;
+  var allDone = done === pz.fragments.length;
+  document.getElementById("submit-btn").disabled = !allDone;
+  document.getElementById("submit-status").textContent = allDone
+    ? "Sequence complete. Submit when ready."
+    : done + "/" + pz.fragments.length + " fragments assigned.";
+}
 function buildSequenceBuild(pz) {
   document.getElementById("seq-section").classList.remove("hidden");
   document.getElementById("contrib-section").classList.remove("hidden");
@@ -1188,7 +1198,8 @@ function onSeqChange() {
     if (v) S.seqSelections[f.id] = parseInt(v);
     else   delete S.seqSelections[f.id];
   });
-  checkSeqBuildReady(pz);
+  if (pz.type === "sequence") checkSeqOnlyReady(pz);
+  else checkSeqBuildReady(pz);
 }
 
 function checkSeqBuildReady(pz) {
@@ -1331,18 +1342,16 @@ function submitAnswer() {
   var pz = PUZZLES[S.room];
   var pass = false;
 
-  if (pz.type === "sequence_build") {
-    var seqCorrect  = pz.fragments.every(function(f){ return S.seqSelections[f.id] === f.correctPosition; });
-    var contentOk   = [0,1,2,3].every(function(i){ return (S.contribs[i] || "").length >= 20; });
-    pass = seqCorrect && contentOk;
+  if (pz.type === "sequence") {
+    pass = pz.fragments.every(function(f){ return S.seqSelections[f.id] === f.correctPosition; });
 
   } else if (pz.type === "build") {
     pass = true;
 
   } else if (pz.type === "flag") {
-    var flagged  = Object.entries(S.flagSelections).filter(function(e){ return e[1] === "flag"; }).map(function(e){ return e[0]; });
-    var correct  = flagged.filter(function(f){ return pz.correctFlags.indexOf(f) !== -1; });
-    var wrong    = flagged.filter(function(f){ return pz.correctFlags.indexOf(f) === -1; });
+    var flagged = Object.entries(S.flagSelections).filter(function(e){ return e[1] === "flag"; }).map(function(e){ return e[0]; });
+    var correct = flagged.filter(function(f){ return pz.correctFlags.indexOf(f) !== -1; });
+    var wrong   = flagged.filter(function(f){ return pz.correctFlags.indexOf(f) === -1; });
     pass = correct.length >= pz.flagTarget && wrong.length === 0;
 
   } else if (pz.type === "vote") {
