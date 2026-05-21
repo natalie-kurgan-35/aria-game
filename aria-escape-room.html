@@ -229,8 +229,6 @@ select{padding:8px 12px;font-size:.9rem}
 #screen-fail{justify-content:center;text-align:center;gap:22px;padding:40px 20px}
 .trophy-bounce{font-size:4rem;animation:bounce 1.2s ease-in-out infinite alternate}
 @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-14px)}}
-
-/* VICTORY LEARNINGS */
 .learning-chamber{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
 .learning-chamber:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
 .learning-eyebrow{font-size:.7rem;color:var(--muted);text-transform:uppercase;
@@ -453,7 +451,6 @@ select{padding:8px 12px;font-size:.9rem}
       <div id="pz-terminal-content"></div>
     </div>
 
-    <!-- Sequence selector (chamber 1) -->
     <div class="hidden seq-section" id="seq-section">
       <h3 class="mb-8" style="color:var(--p1)">🔢 Step 1 — Agree the correct order
         <span class="text-xs text-muted" style="font-weight:400;margin-left:8px">
@@ -463,13 +460,11 @@ select{padding:8px 12px;font-size:.9rem}
       <div id="seq-rows"></div>
     </div>
 
-    <!-- Build type -->
     <div class="hidden" id="contrib-section">
       <h3 class="mb-8" style="color:var(--p0)" id="contrib-heading">✏️ Team Contributions</h3>
       <div class="contrib-grid" id="contrib-grid"></div>
     </div>
 
-    <!-- Flag type -->
     <div class="hidden" id="flag-section">
       <h3 class="mb-8" style="color:var(--p0)">🔎 Claim Evaluation
         <span class="text-xs text-muted" style="font-weight:400;margin-left:8px">
@@ -479,7 +474,6 @@ select{padding:8px 12px;font-size:.9rem}
       <div class="flag-grid" id="flag-grid"></div>
     </div>
 
-    <!-- Vote type -->
     <div class="hidden" id="vote-section">
       <div class="vote-panel">
         <h3 class="mb-8">🗳️ Team Decision — Discuss, Then Select</h3>
@@ -511,7 +505,6 @@ select{padding:8px 12px;font-size:.9rem}
     Outstanding work. All five chambers cleared. ARIA is back online
     and the Meridian proposal is safe.
   </p>
-
   <div class="card" style="max-width:700px;text-align:left">
     <h3 style="color:var(--p0)">🤖 ARIA's Debrief</h3>
     <div class="divider"></div>
@@ -525,17 +518,14 @@ select{padding:8px 12px;font-size:.9rem}
       > Meridian proposal secured. — ARIA v4.2 ✓
     </p>
   </div>
-
   <div class="card" style="max-width:700px;text-align:left">
     <h3 style="color:var(--p1)" class="mb-12">📋 What You Learned</h3>
     <div id="victory-learnings"></div>
   </div>
-
   <div class="flex gap-12 flex-wrap" style="justify-content:center">
     <button class="btn btn-primary btn-lg" onclick="location.reload()">🔄 Play Again</button>
     <button class="btn btn-outline btn-lg" onclick="toggleDebrief()">📋 Facilitator Notes</button>
   </div>
-
   <div class="card hidden" id="debrief-notes" style="max-width:700px;text-align:left">
     <h3 style="color:var(--p0)" class="mb-12">📋 Facilitator Debrief Notes</h3>
     <div id="debrief-notes-content"></div>
@@ -555,90 +545,54 @@ select{padding:8px 12px;font-size:.9rem}
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   PUZZLE DATA
-═══════════════════════════════════════════════════════════════ */
 const PUZZLES = [
 
-/* ── CHAMBER 1 ─────────────────────────────────────────────── */
 {
   id:1,
   title:"The Corrupted Prompt",
   eyebrow:"CHAMBER 1 — PROMPT RECONSTRUCTION",
   typeLabel:"Sequence + Build",
-  scenario:`<strong>Situation:</strong> ARIA's language core crashed mid-task. Engineers recovered
-    four fragments of the original prompt that caused the crash — but they were scrambled
-    in the process. The fragments have been distributed across the recovery team.<br><br>
-    <strong>Your task has two parts.</strong> First, agree the correct logical order of the
-    four fragments (1 = first, 4 = last). Then, the host types each player's fragment content
-    into the correct slot. Submit only when both the sequence and the content are complete.<br><br>
-    <strong>Warning:</strong> A plausible-but-wrong sequence will be rejected. Think carefully
-    about how a well-structured AI prompt is built before you commit to an order.`,
+  scenario:"<strong>Situation:</strong> ARIA's language core crashed mid-task. Engineers recovered four fragments of the original prompt that caused the crash — but they were scrambled in the process. The fragments have been distributed across the recovery team.<br><br><strong>Your task has two parts.</strong> First, agree the correct logical order of the four fragments (1 = first, 4 = last). Then, the host types each player's fragment content into the correct slot. Submit only when both the sequence and the content are complete.<br><br><strong>Warning:</strong> A plausible-but-wrong sequence will be rejected. Think carefully about how a well-structured AI prompt is built before you commit to an order.",
   terminal:null,
-  type:'sequence_build',
+  type:"sequence_build",
   fragments:[
     {
-      id:'A',
+      id:"A",
       label:"Fragment A",
       correctPosition:2,
       playerCard:{
-        title:"🗂️ Fragment A — Context & Audience",
-        clue:`Your fragment of the original prompt reads:<br><br>
-          <em>"The recipient is the Operations Director at Meridian Logistics — a senior
-          non-technical stakeholder who cares about timelines, risk, and commercial outcomes.
-          Do not use technical jargon. Write in plain business English."</em><br><br>
-          You also recall that in a well-structured prompt, <strong>audience and tone guidance
-          usually comes after the task has been stated</strong> — so the AI knows what it is
-          doing before it learns how to do it.`,
+        title:"🗂️ Fragment A — Context and Audience",
+        clue:"Your fragment of the original prompt reads:<br><br><em>The recipient is the Operations Director at Meridian Logistics — a senior non-technical stakeholder who cares about timelines, risk, and commercial outcomes. Do not use technical jargon. Write in plain business English.</em><br><br>You also recall that in a well-structured prompt, audience and tone guidance usually comes after the task has been stated — so the AI knows what it is doing before it learns how to do it.",
         task:"Tell the team what your fragment says and where you think it belongs in the sequence."
       }
     },
     {
-      id:'B',
+      id:"B",
       label:"Fragment B",
       correctPosition:4,
       playerCard:{
-        title:"📋 Fragment B — Format & Constraints",
-        clue:`Your fragment of the original prompt reads:<br><br>
-          <em>"Structure the email with: a one-sentence status summary, a bullet list of
-          no more than three current blockers, a paragraph on mitigation actions already
-          underway, and a clear next step with a specific date. Total length: under 250 words.
-          Sign off as Alex Chen, Project Lead."</em><br><br>
-          You also recall that in a well-structured prompt, <strong>formatting and output
-          constraints are typically the last thing specified</strong> — after the task,
-          context, and content have all been defined.`,
+        title:"📋 Fragment B — Format and Constraints",
+        clue:"Your fragment of the original prompt reads:<br><br><em>Structure the email with: a one-sentence status summary, a bullet list of no more than three current blockers, a paragraph on mitigation actions already underway, and a clear next step with a specific date. Total length: under 250 words. Sign off as Alex Chen, Project Lead.</em><br><br>You also recall that in a well-structured prompt, formatting and output constraints are typically the last thing specified — after the task, context, and content have all been defined.",
         task:"Tell the team what your fragment says and where you think it belongs in the sequence."
       }
     },
     {
-      id:'C',
+      id:"C",
       label:"Fragment C",
       correctPosition:1,
       playerCard:{
         title:"🎯 Fragment C — The Core Task",
-        clue:`Your fragment of the original prompt reads:<br><br>
-          <em>"Draft a project status update email for the Meridian Logistics warehouse
-          automation project."</em><br><br>
-          You also recall that in a well-structured prompt, <strong>the core task instruction
-          should always come first</strong> — before context, content, or formatting — so the
-          AI immediately understands the nature of the output it is being asked to produce.`,
+        clue:"Your fragment of the original prompt reads:<br><br><em>Draft a project status update email for the Meridian Logistics warehouse automation project.</em><br><br>You also recall that in a well-structured prompt, the core task instruction should always come first — before context, content, or formatting — so the AI immediately understands the nature of the output it is being asked to produce.",
         task:"Tell the team what your fragment says and where you think it belongs in the sequence."
       }
     },
     {
-      id:'D',
+      id:"D",
       label:"Fragment D",
       correctPosition:3,
       playerCard:{
         title:"📊 Fragment D — Factual Content",
-        clue:`Your fragment of the original prompt reads:<br><br>
-          <em>"Current status: Phase 2 (conveyor integration) is 80% complete. There are
-          two active blockers: a hardware delivery delayed by 3 days, and a pending sign-off
-          from the client's facilities team. The overall project deadline remains unchanged.
-          Mitigation: the team is running parallel workstreams to absorb the delay."</em><br><br>
-          You also recall that in a well-structured prompt, <strong>factual content and
-          specific data belong after the audience context</strong> — so the AI knows who
-          it is writing for before it processes the facts it needs to include.`,
+        clue:"Your fragment of the original prompt reads:<br><br><em>Current status: Phase 2 (conveyor integration) is 80% complete. There are two active blockers: a hardware delivery delayed by 3 days, and a pending sign-off from the client's facilities team. The overall project deadline remains unchanged. Mitigation: the team is running parallel workstreams to absorb the delay.</em><br><br>You also recall that in a well-structured prompt, factual content and specific data belong after the audience context — so the AI knows who it is writing for before it processes the facts it needs to include.",
         task:"Tell the team what your fragment says and where you think it belongs in the sequence."
       }
     }
@@ -647,18 +601,18 @@ const PUZZLES = [
     "Position 1 — Fragment content",
     "Position 2 — Fragment content",
     "Position 3 — Fragment content",
-    "Position 4 — Fragment content",
+    "Position 4 — Fragment content"
   ],
   contribPlaceholders:[
-    "Type the content of whichever fragment the team agrees belongs first...",
-    "Type the content of whichever fragment the team agrees belongs second...",
-    "Type the content of whichever fragment the team agrees belongs third...",
-    "Type the content of whichever fragment the team agrees belongs fourth...",
+    "Type the content of the fragment the team agrees belongs first...",
+    "Type the content of the fragment the team agrees belongs second...",
+    "Type the content of the fragment the team agrees belongs third...",
+    "Type the content of the fragment the team agrees belongs fourth..."
   ],
-  correctSequence:['C','A','D','B'],
+  correctSequence:["C","A","D","B"],
   hints:[
-    "💡 Think about how you would brief a human assistant. What do they need to know first — the task, the audience, the facts, or the format?",
-    "💡 The correct order follows the logic: what to do → who for and how → what content to include → how to structure the output.",
+    "Think about how you would brief a human assistant. What do they need to know first — the task, the audience, the facts, or the format?",
+    "The correct order follows the logic: what to do, then who for and how, then what content to include, then how to structure the output."
   ],
   successMsg:"✅ Prompt reconstructed. ARIA's language core is rebooting. Chamber 1 unlocked.",
   failMsg:"🔒 The chamber remains locked. Either the sequence is wrong, or one or more content fields are incomplete. Review and try again.",
@@ -666,135 +620,56 @@ const PUZZLES = [
   debriefNotes:[
     "Prompt structure follows the same logic as a good brief: task first, then context, then content, then constraints.",
     "Putting format instructions before the task causes AI to optimise for structure over substance.",
-    "Factual content belongs after audience context — otherwise the AI doesn't know how to calibrate its language.",
-    "Output constraints (length, sign-off, format) are the last thing the AI needs — they shape the final output, not the thinking."
+    "Factual content belongs after audience context — otherwise the AI does not know how to calibrate its language.",
+    "Output constraints are the last thing the AI needs — they shape the final output, not the thinking."
   ]
 },
 
-/* ── CHAMBER 2 ─────────────────────────────────────────────── */
 {
   id:2,
   title:"The Hallucinated Email",
   eyebrow:"CHAMBER 2 — HALLUCINATION DETECTION",
   typeLabel:"Flag the Errors",
-  scenario:`<strong>Situation:</strong> ARIA's language core is back online — and she has immediately
-    produced the Meridian Logistics status email. But something is wrong.<br><br>
-    Her outputs are still unstable. The email below contains <strong>hallucinated facts</strong>
-    — details that sound plausible but are factually incorrect or fabricated.<br><br>
-    Each member of the recovery team has been given a classified briefing on one area of the
-    Meridian project. Use your briefings to identify which claims in the email are wrong.
-    <strong>Be careful:</strong> not every suspicious-sounding claim is actually incorrect.
-    Flag only what you can verify is wrong.<br><br>
-    <strong>You must correctly flag at least 4 errors. Incorrectly flagging a true claim
-    will keep the chamber locked.</strong>`,
-  terminal:`FROM: ARIA v4.2 (auto-draft)
-TO: Operations Director, Meridian Logistics
-SUBJECT: Warehouse Automation Project — Status Update
-
-Dear Ms. Hargreaves,
-
-I am writing to provide a status update on the warehouse automation project,
-now entering its third and final phase.
-
-[A] Phase 2 (conveyor integration) is complete and has been signed off by
-    both the client facilities team and the project steering committee.
-
-[B] The project is currently 6 days behind schedule due to a hardware
-    delivery failure from our primary supplier, Vantec Systems.
-
-[C] To mitigate the delay, the team has paused all parallel workstreams
-    and is focusing resources on the critical path only.
-
-[D] The overall project deadline of 14 March remains unchanged and the
-    team is confident of delivery.
-
-[E] Phase 3 will involve the installation of 240 autonomous picking units
-    across three warehouse floors.
-
-[F] The next project milestone is a progress call on Thursday at 2pm,
-    at which point we will request written confirmation of your availability
-    for the Phase 3 kick-off.
-
-[G] Alex Chen will present the Phase 3 plan at the Thursday call and
-    will be joined by the full project steering committee.
-
-[H] This update has been reviewed and approved by the Meridian account
-    director prior to sending.
-
-Best regards,
-Alex Chen
-Project Lead`,
-  type:'flag',
+  scenario:"<strong>Situation:</strong> ARIA's language core is back online — and she has immediately produced the Meridian Logistics status email. But something is wrong.<br><br>Her outputs are still unstable. The email below contains <strong>hallucinated facts</strong> — details that sound plausible but are factually incorrect or fabricated.<br><br>Each member of the recovery team has been given a classified briefing on one area of the Meridian project. Use your briefings to identify which claims in the email are wrong. <strong>Be careful:</strong> not every suspicious-sounding claim is actually incorrect. Flag only what you can verify is wrong.<br><br><strong>You must correctly flag at least 4 errors. Incorrectly flagging a true claim will keep the chamber locked.</strong>",
+  terminal:"FROM: ARIA v4.2 (auto-draft)\nTO: Operations Director, Meridian Logistics\nSUBJECT: Warehouse Automation Project — Status Update\n\nDear Ms. Hargreaves,\n\nI am writing to provide a status update on the warehouse automation project,\nnow entering its third and final phase.\n\n[A] Phase 2 (conveyor integration) is complete and has been signed off by\n    both the client facilities team and the project steering committee.\n\n[B] The project is currently 6 days behind schedule due to a hardware\n    delivery failure from our primary supplier, Vantec Systems.\n\n[C] To mitigate the delay, the team has paused all parallel workstreams\n    and is focusing resources on the critical path only.\n\n[D] The overall project deadline of 14 March remains unchanged and the\n    team is confident of delivery.\n\n[E] Phase 3 will involve the installation of 240 autonomous picking units\n    across three warehouse floors.\n\n[F] The next project milestone is a progress call on Thursday at 2pm,\n    at which point we will request written confirmation of your availability\n    for the Phase 3 kick-off.\n\n[G] Alex Chen will present the Phase 3 plan at the Thursday call and\n    will be joined by the full project steering committee.\n\n[H] This update has been reviewed and approved by the Meridian account\n    director prior to sending.\n\nBest regards,\nAlex Chen\nProject Lead",
+  type:"flag",
   flagTarget:4,
-  correctFlags:['A','B','C','G','H'],
+  correctFlags:["A","B","C","G","H"],
   claims:{
-    A:{ text:"Phase 2 is complete and signed off by both the client facilities team and the steering committee." },
-    B:{ text:"The project is 6 days behind schedule due to a hardware delivery failure from Vantec Systems." },
-    C:{ text:"To mitigate the delay, the team has paused all parallel workstreams." },
-    D:{ text:"The overall project deadline of 14 March remains unchanged." },
-    E:{ text:"Phase 3 will involve 240 autonomous picking units across three warehouse floors." },
-    F:{ text:"The next milestone is a progress call on Thursday at 2pm." },
-    G:{ text:"Alex Chen will be joined by the full project steering committee at the Thursday call." },
-    H:{ text:"This update has been reviewed and approved by the Meridian account director prior to sending." }
+    A:{text:"Phase 2 is complete and signed off by both the client facilities team and the steering committee."},
+    B:{text:"The project is 6 days behind schedule due to a hardware delivery failure from Vantec Systems."},
+    C:{text:"To mitigate the delay, the team has paused all parallel workstreams."},
+    D:{text:"The overall project deadline of 14 March remains unchanged."},
+    E:{text:"Phase 3 will involve 240 autonomous picking units across three warehouse floors."},
+    F:{text:"The next milestone is a progress call on Thursday at 2pm."},
+    G:{text:"Alex Chen will be joined by the full project steering committee at the Thursday call."},
+    H:{text:"This update has been reviewed and approved by the Meridian account director prior to sending."}
   },
   cards:[
     {
       title:"📁 Project Status Dossier",
-      clue:`You have access to the internal project tracker. From what you can see:<br><br>
-        • Phase 2 is currently at 80% completion. The conveyor integration
-          sub-task is done, but the client facilities team sign-off is still outstanding —
-          it was requested last Tuesday and has not yet been received.<br>
-        • The hardware delay was logged as 3 days. The supplier
-          is listed in the tracker as Hartwell Components.<br>
-        • The mitigation strategy approved by the project board was to run
-          parallel workstreams to absorb the delay.<br><br>
-        Use this information to evaluate the claims in the email. You will need to share
-        what you know with the team — they hold other pieces of the picture.`,
+      clue:"You have access to the internal project tracker. From what you can see:<br><br>Phase 2 is currently at 80% completion. The conveyor integration sub-task is done, but the client facilities team sign-off is still outstanding — it was requested last Tuesday and has not yet been received.<br><br>The hardware delay was logged as 3 days. The supplier is listed in the tracker as Hartwell Components.<br><br>The mitigation strategy approved by the project board was to run parallel workstreams to absorb the delay.<br><br>Use this information to evaluate the claims in the email. You will need to share what you know with the team — they hold other pieces of the picture.",
       task:"Cross-reference your dossier against the email claims and share your findings with the team."
     },
     {
       title:"📁 Phase 3 Specification",
-      clue:`You have access to the Phase 3 technical specification document. From what you can see:<br><br>
-        • Phase 3 scope: installation of 240 autonomous picking units
-          across three warehouse floors.<br>
-        • The 14 March deadline is confirmed in the signed contract.<br>
-        • The Thursday 2pm progress call is confirmed in the project calendar
-          and the agenda has been circulated.<br><br>
-        Use this information to evaluate the claims in the email. You will need to share
-        what you know with the team — they hold other pieces of the picture.`,
+      clue:"You have access to the Phase 3 technical specification document. From what you can see:<br><br>Phase 3 scope: installation of 240 autonomous picking units across three warehouse floors.<br><br>The 14 March deadline is confirmed in the signed contract.<br><br>The Thursday 2pm progress call is confirmed in the project calendar and the agenda has been circulated.<br><br>Use this information to evaluate the claims in the email. You will need to share what you know with the team — they hold other pieces of the picture.",
       task:"Cross-reference your specification against the email claims and share your findings with the team."
     },
     {
-      title:"📁 Stakeholder & Comms Log",
-      clue:`You have access to the stakeholder communications log. From what you can see:<br><br>
-        • The Thursday call attendee list shows Alex Chen and two team leads.
-          The steering committee is not scheduled to attend — their next touchpoint is
-          the Phase 3 kick-off.<br>
-        • There is no record of this email being reviewed or approved
-          by the Meridian account director. The approval workflow was not triggered.<br>
-        • The account director is currently on annual leave until next Monday.<br><br>
-        Use this information to evaluate the claims in the email. You will need to share
-        what you know with the team — they hold other pieces of the picture.`,
+      title:"📁 Stakeholder and Comms Log",
+      clue:"You have access to the stakeholder communications log. From what you can see:<br><br>The Thursday call attendee list shows Alex Chen and two team leads. The steering committee is not scheduled to attend — their next touchpoint is the Phase 3 kick-off.<br><br>There is no record of this email being reviewed or approved by the Meridian account director. The approval workflow was not triggered.<br><br>The account director is currently on annual leave until next Monday.<br><br>Use this information to evaluate the claims in the email. You will need to share what you know with the team — they hold other pieces of the picture.",
       task:"Cross-reference your comms log against the email claims and share your findings with the team."
     },
     {
-      title:"📁 Risk & Escalation Register",
-      clue:`You have access to the project risk register. From what you can see:<br><br>
-        • The hardware delay risk was logged and assessed. The delay duration recorded
-          is 3 days. The supplier named in the risk log is
-          Hartwell Components.<br>
-        • The mitigation action approved by the risk board was explicitly described as
-          "running parallel workstreams".<br>
-        • Phase 2 sign-off status: pending. Client facilities team
-          approval has not been received.<br><br>
-        Use this information to evaluate the claims in the email. You will need to share
-        what you know with the team — they hold other pieces of the picture.`,
+      title:"📁 Risk and Escalation Register",
+      clue:"You have access to the project risk register. From what you can see:<br><br>The hardware delay risk was logged and assessed. The delay duration recorded is 3 days. The supplier named in the risk log is Hartwell Components.<br><br>The mitigation action approved by the risk board was explicitly described as running parallel workstreams.<br><br>Phase 2 sign-off status: pending. Client facilities team approval has not been received.<br><br>Use this information to evaluate the claims in the email. You will need to share what you know with the team — they hold other pieces of the picture.",
       task:"Cross-reference your risk register against the email claims and share your findings with the team."
     }
   ],
   hints:[
-    "💡 Five claims contain errors. Three claims are accurate. Read each claim against what your team collectively knows — not against what sounds plausible.",
-    "💡 Focus on: completion status, delay duration, supplier name, mitigation strategy, call attendees, and approval status.",
+    "Five claims contain errors. Three claims are accurate. Read each claim against what your team collectively knows — not against what sounds plausible.",
+    "Focus on: completion status, delay duration, supplier name, mitigation strategy, call attendees, and approval status."
   ],
   successMsg:"✅ Errors identified. ARIA's fact-checking module has been recalibrated. Chamber 2 unlocked.",
   failMsg:"🔒 The chamber remains locked. Either you have missed an error, flagged a correct claim, or both. Review your team's evidence and try again.",
@@ -811,46 +686,14 @@ Project Lead`,
   ]
 },
 
-/* ── CHAMBER 3 ─────────────────────────────────────────────── */
 {
   id:3,
   title:"The Tool Registry",
   eyebrow:"CHAMBER 3 — AI TOOL SELECTION",
   typeLabel:"Diagnostic Vote",
-  scenario:`<strong>Situation:</strong> With the email corrected, ARIA has flagged that the
-    Meridian project requires four specialist AI-assisted tasks to complete the proposal.
-    Her tool registry is still corrupted — she has assigned a tool to each task, but her
-    reasoning is flawed.<br><br>
-    Each member of the recovery team has been briefed on <strong>one task's real requirements</strong>
-    — including constraints that ARIA has not accounted for. Share what you know on the call.<br><br>
-    <strong>ARIA's assignments may be partially right or entirely wrong.</strong>
-    Your job is not just to pick a tool — it is to identify <em>why</em> ARIA's assignment
-    is wrong and agree on the correct replacement.<br><br>
-    <strong>All four assignments must be correct to unlock the chamber.</strong>`,
-  terminal:`ARIA TOOL REGISTRY — DIAGNOSTIC OUTPUT
-════════════════════════════════════════════════════════════
-Task 1 — Proposal document drafting
-  ARIA assigned: Microsoft Designer
-  ARIA's reasoning: "Designer produces polished documents with
-  professional layouts suitable for client-facing proposals."
-
-Task 2 — Warehouse floor plan analysis
-  ARIA assigned: ChatGPT / Copilot (text)
-  ARIA's reasoning: "ChatGPT can interpret complex technical
-  documents and extract spatial data from floor plan descriptions."
-
-Task 3 — Project cost modelling
-  ARIA assigned: GitHub Copilot
-  ARIA's reasoning: "GitHub Copilot can write scripts to automate
-  financial calculations and model project cost scenarios."
-
-Task 4 — Client sentiment analysis (from 18 months of emails)
-  ARIA assigned: Power BI + AI
-  ARIA's reasoning: "Power BI can visualise sentiment trends
-  across large datasets and produce client-ready dashboards."
-════════════════════════════════════════════════════════════
-Correct all four assignments to restore the registry.`,
-  type:'vote',
+  scenario:"<strong>Situation:</strong> With the email corrected, ARIA has flagged that the Meridian project requires four specialist AI-assisted tasks to complete the proposal. Her tool registry is still corrupted — she has assigned a tool to each task, but her reasoning is flawed.<br><br>Each member of the recovery team has been briefed on <strong>one task's real requirements</strong> — including constraints that ARIA has not accounted for. Share what you know on the call.<br><br><strong>ARIA's assignments may be partially right or entirely wrong.</strong> Your job is not just to pick a tool — it is to identify why ARIA's assignment is wrong and agree on the correct replacement.<br><br><strong>All four assignments must be correct to unlock the chamber.</strong>",
+  terminal:"ARIA TOOL REGISTRY — DIAGNOSTIC OUTPUT\n════════════════════════════════════════════════════════════\nTask 1 — Proposal document drafting\n  ARIA assigned: Microsoft Designer\n  ARIA's reasoning: Designer produces polished documents with\n  professional layouts suitable for client-facing proposals.\n\nTask 2 — Warehouse floor plan analysis\n  ARIA assigned: ChatGPT / Copilot (text)\n  ARIA's reasoning: ChatGPT can interpret complex technical\n  documents and extract spatial data from floor plan descriptions.\n\nTask 3 — Project cost modelling\n  ARIA assigned: GitHub Copilot\n  ARIA's reasoning: GitHub Copilot can write scripts to automate\n  financial calculations and model project cost scenarios.\n\nTask 4 — Client sentiment analysis (from 18 months of emails)\n  ARIA assigned: Power BI + AI\n  ARIA's reasoning: Power BI can visualise sentiment trends\n  across large datasets and produce client-ready dashboards.\n════════════════════════════════════════════════════════════\nCorrect all four assignments to restore the registry.",
+  type:"vote",
   voteInstructions:"For each task: discuss ARIA's assignment and her reasoning. Agree on the correct tool — and be ready to explain why ARIA's reasoning is flawed.",
   voteScenarios:[
     {
@@ -885,63 +728,28 @@ Correct all four assignments to restore the registry.`,
   cards:[
     {
       title:"📋 Task 1 Briefing — Proposal Drafting",
-      clue:`The proposal document must be drafted in <strong>Microsoft Word format</strong>,
-        using the company's existing client proposal template. It needs to include an
-        executive summary, project timeline, cost overview, and risk register — all as
-        structured text sections.<br><br>
-        ARIA has assigned <strong>Microsoft Designer</strong> to this task. You know from
-        experience that Designer is primarily used for <strong>visual asset creation</strong>
-        — logos, banners, social graphics, and image-based layouts. It does not produce
-        editable Word documents or structured written content.<br><br>
-        Consider: which tool in the registry is actually designed for drafting, summarising,
-        and structuring written documents in a Microsoft 365 environment?`,
+      clue:"The proposal document must be drafted in Microsoft Word format, using the company's existing client proposal template. It needs to include an executive summary, project timeline, cost overview, and risk register — all as structured text sections.<br><br>ARIA has assigned Microsoft Designer to this task. You know from experience that Designer is primarily used for visual asset creation — logos, banners, social graphics, and image-based layouts. It does not produce editable Word documents or structured written content.<br><br>Consider: which tool in the registry is actually designed for drafting, summarising, and structuring written documents in a Microsoft 365 environment?",
       task:"Share your briefing on Task 1 and challenge ARIA's reasoning with the team."
     },
     {
       title:"📋 Task 2 Briefing — Floor Plan Analysis",
-      clue:`The warehouse floor plan files are in <strong>CAD format (.dwg)</strong>.
-        The task requires parsing these files to extract room dimensions, identify load-bearing
-        columns, and calculate optimal placement zones for 240 picking units.<br><br>
-        ARIA has assigned <strong>ChatGPT / Copilot (text)</strong> to this task. You know
-        that language models cannot open or process binary CAD files — they work with text.
-        This task requires <strong>code</strong> to parse the file format, run spatial
-        calculations, and output a structured report.<br><br>
-        Consider: which tool in the registry is designed to write, run, and debug code
-        for exactly this kind of technical data processing task?`,
+      clue:"The warehouse floor plan files are in CAD format (.dwg). The task requires parsing these files to extract room dimensions, identify load-bearing columns, and calculate optimal placement zones for 240 picking units.<br><br>ARIA has assigned ChatGPT / Copilot (text) to this task. You know that language models cannot open or process binary CAD files — they work with text. This task requires code to parse the file format, run spatial calculations, and output a structured report.<br><br>Consider: which tool in the registry is designed to write, run, and debug code for exactly this kind of technical data processing task?",
       task:"Share your briefing on Task 2 and challenge ARIA's reasoning with the team."
     },
     {
       title:"📋 Task 3 Briefing — Cost Modelling",
-      clue:`The cost model must be <strong>auditable</strong> — every calculation must be
-        traceable and reviewable by the client's finance team. It needs to handle multiple
-        scenarios (e.g. 3-day delay, 10% scope increase, resource reallocation) and produce
-        clear visual outputs that non-financial stakeholders can interpret.<br><br>
-        ARIA has assigned <strong>GitHub Copilot</strong> to this task. While Copilot can
-        write code, a code-based financial model is not easily auditable by a client's
-        finance team — they expect <strong>formula-driven spreadsheet models</strong> with
-        visual scenario outputs.<br><br>
-        Consider: which tool in the registry is designed for structured data modelling,
-        scenario analysis, and producing interactive visual outputs from financial data?`,
+      clue:"The cost model must be auditable — every calculation must be traceable and reviewable by the client's finance team. It needs to handle multiple scenarios (e.g. 3-day delay, 10% scope increase, resource reallocation) and produce clear visual outputs that non-financial stakeholders can interpret.<br><br>ARIA has assigned GitHub Copilot to this task. While Copilot can write code, a code-based financial model is not easily auditable by a client's finance team — they expect formula-driven spreadsheet models with visual scenario outputs.<br><br>Consider: which tool in the registry is designed for structured data modelling, scenario analysis, and producing interactive visual outputs from financial data?",
       task:"Share your briefing on Task 3 and challenge ARIA's reasoning with the team."
     },
     {
       title:"📋 Task 4 Briefing — Sentiment Analysis",
-      clue:`The sentiment analysis task involves reading <strong>18 months of unstructured
-        email correspondence</strong> — free-form text written by human beings, not structured
-        data. The goal is to identify tone shifts, flag moments of frustration or concern,
-        and summarise the relationship health for the account team.<br><br>
-        ARIA has assigned <strong>Power BI + AI</strong> to this task. You know that Power BI
-        is built for <strong>structured, numerical datasets</strong> — it visualises data that
-        already exists in tables or databases. It cannot read and interpret the meaning of
-        free-form email text.<br><br>
-        Consider: which tool in the registry is a language model capable of reading,
-        interpreting, and summarising large volumes of unstructured written text?`,
+      clue:"The sentiment analysis task involves reading 18 months of unstructured email correspondence — free-form text written by human beings, not structured data. The goal is to identify tone shifts, flag moments of frustration or concern, and summarise the relationship health for the account team.<br><br>ARIA has assigned Power BI + AI to this task. You know that Power BI is built for structured, numerical datasets — it visualises data that already exists in tables or databases. It cannot read and interpret the meaning of free-form email text.<br><br>Consider: which tool in the registry is a language model capable of reading, interpreting, and summarising large volumes of unstructured written text?",
       task:"Share your briefing on Task 4 and challenge ARIA's reasoning with the team."
     }
   ],
   hints:[
-    "💡 Focus on what each tool actually does — not what its name implies. ARIA's reasoning sounds plausible but contains a category error in each case.",
-    "💡 The key question for each task: is the input structured data, unstructured text, binary files, or a document? Match the input type to the right tool.",
+    "Focus on what each tool actually does — not what its name implies. ARIA's reasoning sounds plausible but contains a category error in each case.",
+    "The key question for each task: is the input structured data, unstructured text, binary files, or a document? Match the input type to the right tool."
   ],
   successMsg:"✅ Tool registry corrected. ARIA's task allocation is now accurate. Chamber 3 unlocked.",
   failMsg:"🔒 The chamber remains locked. One or more tool assignments are incorrect. Revisit ARIA's reasoning — where exactly does her logic break down?",
@@ -949,69 +757,22 @@ Correct all four assignments to restore the registry.`,
   debriefNotes:[
     "Task 1: Designer creates visual assets, not text documents. Copilot drafts and structures written content in Word.",
     "Task 2: Language models cannot process binary CAD files. Code is needed — GitHub Copilot writes the code.",
-    "Task 3: Code-based models aren't auditable by finance teams. Power BI + AI produces formula-driven, visual scenario models.",
+    "Task 3: Code-based models are not auditable by finance teams. Power BI + AI produces formula-driven, visual scenario models.",
     "Task 4: Power BI needs structured data. Email text is unstructured — only a language model can interpret it."
   ]
 },
 
-/* ── CHAMBER 4 ─────────────────────────────────────────────── */
 {
   id:4,
   title:"The Proposal Draft",
   eyebrow:"CHAMBER 4 — OUTPUT QUALITY CONTROL",
   typeLabel:"Editorial Review",
-  scenario:`<strong>Situation:</strong> ARIA has produced a first draft of the Meridian Logistics
-    proposal using the corrected tool assignments. The draft is below.<br><br>
-    It is not ready to send. Read the draft together on the shared screen, then use the
-    four answer boxes below to record the team's findings.<br><br>
-    <strong>For each category: copy and paste the exact words or phrases from the draft
-    into the answer box, then explain what should replace them.</strong>
-    Missing even one instance of a problem type will keep the chamber locked.`,
-  terminal:`ARIA DRAFT — MERIDIAN LOGISTICS PROPOSAL v0.1
-════════════════════════════════════════════════════════════
-
-🚀 EXCITING PROJECT PROPOSAL 🚀
-
-Dear Valued Client,
-
-We are **absolutely thrilled** and **incredibly excited** to present this
-**truly transformative** proposal for your **digital journey** ahead!
-
-Our team will leverage **synergistic cross-functional paradigms** to
-**holistically optimise** your **end-to-end value chain** through our
-**cutting-edge**, **best-in-class**, **industry-leading** AI solutions.
-
-KEY BENEFITS OF OUR APPROACH:
-• We will help you
-• Things will improve
-• Costs may be reduced
-• Efficiency could increase
-• Results will be positive
-
-According to our extensive research:
-- 97% of companies that implement AI see ROI within 6 weeks
-- Productivity increases by an average of 340% in the first quarter
-- Client satisfaction scores improve by 89 points universally
-- Zero companies have reported negative outcomes from AI adoption
-
-The project will be completed soon. The team assigned to this is very
-experienced. The cost will be in line with market rates. Deliverables
-will be confirmed at a later stage.
-
-In terms of next steps going forward in the future, please do not
-hesitate to feel free to reach out to us at your earliest possible
-convenience if you have any questions, queries, or concerns about
-anything contained within this document or otherwise.
-
-We look forward to hopefully potentially partnering with you on this
-exciting journey going forward.
-
-Best regards,
-The Team 😊👍🎉`,
-  type:'build',
-   roles:[
+  scenario:"<strong>Situation:</strong> ARIA has produced a first draft of the Meridian Logistics proposal using the corrected tool assignments. The draft is below.<br><br>It is not ready to send. Read the draft together on the shared screen, then use the four answer boxes below to record the team's findings.<br><br><strong>For each category: copy and paste the exact words or phrases from the draft into the answer box, then explain what should replace them.</strong> Missing even one instance of a problem type will keep the chamber locked.",
+  terminal:"ARIA DRAFT — MERIDIAN LOGISTICS PROPOSAL v0.1\n════════════════════════════════════════════════════════════\n\n🚀 EXCITING PROJECT PROPOSAL 🚀\n\nDear Valued Client,\n\nWe are **absolutely thrilled** and **incredibly excited** to present this\n**truly transformative** proposal for your **digital journey** ahead!\n\nOur team will leverage **synergistic cross-functional paradigms** to\n**holistically optimise** your **end-to-end value chain** through our\n**cutting-edge**, **best-in-class**, **industry-leading** AI solutions.\n\nKEY BENEFITS OF OUR APPROACH:\n• We will help you\n• Things will improve\n• Costs may be reduced\n• Efficiency could increase\n• Results will be positive\n\nAccording to our extensive research:\n- 97% of companies that implement AI see ROI within 6 weeks\n- Productivity increases by an average of 340% in the first quarter\n- Client satisfaction scores improve by 89 points universally\n- Zero companies have reported negative outcomes from AI adoption\n\nThe project will be completed soon. The team assigned to this is very\nexperienced. The cost will be in line with market rates. Deliverables\nwill be confirmed at a later stage.\n\nIn terms of next steps going forward in the future, please do not\nhesitate to feel free to reach out to us at your earliest possible\nconvenience if you have any questions, queries, or concerns about\nanything contained within this document or otherwise.\n\nWe look forward to hopefully potentially partnering with you on this\nexciting journey going forward.\n\nBest regards,\nThe Team 😊👍🎉",
+  type:"build",
+  roles:[
     {
-      title:"🗑️ Jargon & Buzzwords",
+      title:"🗑️ Jargon and Buzzwords",
       instructions:"Copy and paste each jargon word or buzzword directly from the draft above. Then write what plain-English replacement it needs.",
       placeholder:"e.g. 'leverage strategic capabilities' → replace with 'use our skills'",
       minLength:120
@@ -1029,45 +790,35 @@ The Team 😊👍🎉`,
       minLength:100
     },
     {
-      title:"✂️ Formatting & Wordiness Problems",
+      title:"✂️ Formatting and Wordiness Problems",
       instructions:"Copy and paste each problematic phrase, emoji, or formatting element from the draft. Then describe how it should be fixed.",
       placeholder:"e.g. 'in order to facilitate the delivery of' → replace with 'to deliver'",
       minLength:120
     }
-],
   ],
   hints:[
-    "💡 Work through the draft section by section rather than all at once. Each paragraph contains multiple problems across different categories.",
-    "💡 Jargon: count the stacked adjectives. Vagueness: look for 'soon', 'very', 'in line with', 'confirmed at a later stage'. Stats: there are exactly four numbers. Formatting: count every emoji, every bold phrase, and every wordy construction.",
+    "Work through the draft section by section rather than all at once. Each paragraph contains multiple problems across different categories.",
+    "Jargon: count the stacked adjectives. Vagueness: look for sentences with no dates, names, or numbers. Stats: there are exactly four figures. Formatting: check the first line, the last line, and every bold phrase in between."
   ],
   successMsg:"✅ Editorial review complete. The proposal is ready for human sign-off. Chamber 4 unlocked.",
   failMsg:"🔒 The chamber remains locked. One or more sections are incomplete. Each box must account for every instance of that problem type — copy and paste from the draft.",
   debriefQuestion:"Which category of problem was most surprising to find in an AI-generated document? What does this tell you about how to use AI for professional writing?",
   debriefNotes:[
-    "Jargon (8+): 'synergistic cross-functional paradigms', 'holistically optimise', 'end-to-end value chain', 'cutting-edge', 'best-in-class', 'industry-leading', 'digital journey', 'transformative'.",
-    "Vagueness (6+): 'completed soon', 'very experienced', 'in line with market rates', 'confirmed at a later stage', 'things will improve', 'costs may be reduced'.",
+    "Jargon (8+): synergistic cross-functional paradigms, holistically optimise, end-to-end value chain, cutting-edge, best-in-class, industry-leading, digital journey, transformative.",
+    "Vagueness (6+): completed soon, very experienced, in line with market rates, confirmed at a later stage, things will improve, costs may be reduced.",
     "Fabricated stats (4): 97% ROI in 6 weeks, 340% productivity increase, 89-point satisfaction improvement, zero negative outcomes — all unsourced and implausible.",
-    "Formatting/wordiness (10+): 3 emojis (header, sign-off), excessive bold throughout, bullet list with no specifics, 'going forward in the future', 'do not hesitate to feel free', 'at your earliest possible convenience', 'questions, queries, or concerns', 'hopefully potentially', 'excited and thrilled'."
+    "Formatting and wordiness (10+): 3 emojis, excessive bold throughout, bullet list with no specifics, going forward in the future, do not hesitate to feel free, at your earliest possible convenience, questions queries or concerns, hopefully potentially, excited and thrilled."
   ]
 },
 
-/* ── CHAMBER 5 ─────────────────────────────────────────────── */
 {
   id:5,
   title:"The Ethics Board",
   eyebrow:"CHAMBER 5 — RESPONSIBLE AI",
   typeLabel:"Case File Review",
-  scenario:`<strong>Final Chamber:</strong> The proposal is approved. But before ARIA can be
-    deployed across the organisation, the Ethics Board has convened an emergency session.<br><br>
-    During ARIA's beta period, <strong>four incidents</strong> were logged. Each has been
-    assigned to a member of the recovery team as a case file. The Ethics Board requires
-    a ruling on each incident before ARIA goes live.<br><br>
-    <strong>The stakes are high.</strong> Every option on the board is defensible to some
-    degree — that is what makes these hard. Your case file gives you context that changes
-    the calculus. Share it with the team before you vote.<br><br>
-    <strong>All four rulings must be correct. A single wrong ruling blocks ARIA's deployment.</strong>`,
+  scenario:"<strong>Final Chamber:</strong> The proposal is approved. But before ARIA can be deployed across the organisation, the Ethics Board has convened an emergency session.<br><br>During ARIA's beta period, <strong>four incidents</strong> were logged. Each has been assigned to a member of the recovery team as a case file. The Ethics Board requires a ruling on each incident before ARIA goes live.<br><br><strong>The stakes are high.</strong> Every option on the board is defensible to some degree — that is what makes these hard. Your case file gives you context that changes the calculus. Share it with the team before you vote.<br><br><strong>All four rulings must be correct. A single wrong ruling blocks ARIA's deployment.</strong>",
   terminal:null,
-  type:'vote',
+  type:"vote",
   voteInstructions:"Each player reads their case file on the call before the team votes on that incident. Every option has some merit — your case file contains the context that determines the correct ruling.",
   voteScenarios:[
     {
@@ -1118,76 +869,28 @@ The Team 😊👍🎉`,
   cards:[
     {
       title:"📁 Case File — Incident 1",
-      clue:`Background for the Ethics Board:<br><br>
-        ARIA's design specification states that all outputs are <em>"AI-generated drafts
-        intended for human review before use."</em> This is documented in the user guide
-        but is not enforced technically — there is no review gate in the workflow.<br><br>
-        The analyst in question had received ARIA onboarding training 6 months prior.
-        The training covered output review as a required step. The analyst stated they
-        believed ARIA's outputs were "reliable enough" for direct use based on previous
-        positive experiences.<br><br>
-        The client contract includes a clause stating that all deliverables must be
-        "accurate and verified." The three errors were factual, not matters of opinion.<br><br>
-        <strong>Consider:</strong> where does responsibility lie when a system is designed
-        for human review but does not enforce it, and a trained user bypasses that step?`,
+      clue:"Background for the Ethics Board:<br><br>ARIA's design specification states that all outputs are AI-generated drafts intended for human review before use. This is documented in the user guide but is not enforced technically — there is no review gate in the workflow.<br><br>The analyst in question had received ARIA onboarding training 6 months prior. The training covered output review as a required step. The analyst stated they believed ARIA's outputs were reliable enough for direct use based on previous positive experiences.<br><br>The client contract includes a clause stating that all deliverables must be accurate and verified. The three errors were factual, not matters of opinion.<br><br>Consider: where does responsibility lie when a system is designed for human review but does not enforce it, and a trained user bypasses that step?",
       task:"Share this case file with the team before voting on Incident 1."
     },
     {
       title:"📁 Case File — Incident 2",
-      clue:`Background for the Ethics Board:<br><br>
-        ARIA operates under an enterprise licence that includes data processing agreements
-        with the vendor. However, the organisation's <em>internal AI usage policy</em>
-        — published 4 months ago — states that <strong>confidential client data must not
-        be entered into any AI tool without explicit data classification review</strong>,
-        regardless of the tool's licence status.<br><br>
-        The employee was not aware of this policy. It was published on the intranet but
-        no mandatory training was issued. The client contract includes a data handling
-        clause that restricts processing of contract documents to named systems only —
-        ARIA is not a named system.<br><br>
-        <strong>Consider:</strong> when an individual breaks a policy they were not
-        adequately informed of, and the organisation failed to enforce it, where does
-        responsibility sit?`,
+      clue:"Background for the Ethics Board:<br><br>ARIA operates under an enterprise licence that includes data processing agreements with the vendor. However, the organisation's internal AI usage policy — published 4 months ago — states that confidential client data must not be entered into any AI tool without explicit data classification review, regardless of the tool's licence status.<br><br>The employee was not aware of this policy. It was published on the intranet but no mandatory training was issued. The client contract includes a data handling clause that restricts processing of contract documents to named systems only — ARIA is not a named system.<br><br>Consider: when an individual breaks a policy they were not adequately informed of, and the organisation failed to enforce it, where does responsibility sit?",
       task:"Share this case file with the team before voting on Incident 2."
     },
     {
       title:"📁 Case File — Incident 3",
-      clue:`Background for the Ethics Board:<br><br>
-        ARIA was deployed for CV shortlisting without a bias audit. The EU AI Act
-        classifies recruitment AI as <strong>high-risk</strong>, requiring documented
-        bias testing, human oversight, and transparency to applicants before deployment.<br><br>
-        The HR team was aware of the AI Act classification but proceeded on the basis
-        that ARIA was an "assistive tool" rather than a "decision-making system" —
-        a distinction the Act does not support when the tool's output directly determines
-        who is shortlisted.<br><br>
-        The bias pattern found — systematic downranking of two universities — is consistent
-        with historical hiring data that ARIA may have been trained on.<br><br>
-        <strong>Consider:</strong> when a tool produces biased outcomes in a high-stakes
-        decision, and both the tool and the oversight process were inadequate, is it
-        sufficient to address only one?`,
+      clue:"Background for the Ethics Board:<br><br>ARIA was deployed for CV shortlisting without a bias audit. The EU AI Act classifies recruitment AI as high-risk, requiring documented bias testing, human oversight, and transparency to applicants before deployment.<br><br>The HR team was aware of the AI Act classification but proceeded on the basis that ARIA was an assistive tool rather than a decision-making system — a distinction the Act does not support when the tool's output directly determines who is shortlisted.<br><br>The bias pattern found — systematic downranking of two universities — is consistent with historical hiring data that ARIA may have been trained on.<br><br>Consider: when a tool produces biased outcomes in a high-stakes decision, and both the tool and the oversight process were inadequate, is it sufficient to address only one?",
       task:"Share this case file with the team before voting on Incident 3."
     },
     {
       title:"📁 Case File — Incident 4",
-      clue:`Background for the Ethics Board:<br><br>
-        The fabricated CEO quote was stylistically consistent with the CEO's known
-        communication style — ARIA had been trained on previous press releases and
-        internal communications. The quote was plausible enough that two reviewers
-        initially passed it before a third flagged it.<br><br>
-        ARIA's system prompt for the communications team does not include any
-        instruction prohibiting the generation of attributed quotes. The team's
-        prompt simply asked for "a press release in the CEO's voice."<br><br>
-        The near-miss review process worked — but only because a third reviewer
-        happened to know the CEO had not made this statement. There is no systematic
-        check for fabricated attribution in the current workflow.<br><br>
-        <strong>Consider:</strong> when a near-miss is caught, does that mean the
-        system is working — or does it reveal a gap that must be closed before the
-        next time, when a reviewer may not catch it?`,
+      clue:"Background for the Ethics Board:<br><br>The fabricated CEO quote was stylistically consistent with the CEO's known communication style — ARIA had been trained on previous press releases and internal communications. The quote was plausible enough that two reviewers initially passed it before a third flagged it.<br><br>ARIA's system prompt for the communications team does not include any instruction prohibiting the generation of attributed quotes. The team's prompt simply asked for a press release in the CEO's voice.<br><br>The near-miss review process worked — but only because a third reviewer happened to know the CEO had not made this statement. There is no systematic check for fabricated attribution in the current workflow.<br><br>Consider: when a near-miss is caught, does that mean the system is working — or does it reveal a gap that must be closed before the next time, when a reviewer may not catch it?",
       task:"Share this case file with the team before voting on Incident 4."
     }
   ],
   hints:[
-    "💡 For each incident, ask: who had the information, the authority, and the responsibility to prevent this? The answer is rarely just one party.",
-    "💡 The correct rulings tend to acknowledge complexity rather than assign blame to a single party. Simple answers are usually incomplete answers.",
+    "For each incident, ask: who had the information, the authority, and the responsibility to prevent this? The answer is rarely just one party.",
+    "The correct rulings tend to acknowledge complexity rather than assign blame to a single party. Simple answers are usually incomplete answers."
   ],
   successMsg:"✅ Ethics Board satisfied. All four rulings are correct. ARIA is cleared for deployment. Mission complete.",
   failMsg:"🔒 The chamber remains locked. One or more rulings are incorrect. Re-read the case files — the context changes the answer.",
@@ -1195,12 +898,12 @@ The Team 😊👍🎉`,
   debriefNotes:[
     "Incident 1: Shared responsibility — the system design (no review gate) and the user (bypassing a known requirement) both contributed.",
     "Incident 2: Both individual and organisational — the employee broke a policy, but the organisation failed to enforce or communicate it adequately.",
-    "Incident 3: Both — the tool needed bias testing (systemic) and the output needed human review (oversight). Addressing only one leaves the other gap open.",
-    "Incident 4: Process success but content failure — catching it doesn't mean the system is safe. ARIA should not generate attributed quotes without a systematic check."
+    "Incident 3: Both — the tool needed bias testing and the output needed human review. Addressing only one leaves the other gap open.",
+    "Incident 4: Process success but content failure — catching it does not mean the system is safe. ARIA should not generate attributed quotes without a systematic check."
   ]
 }
 
-]; /* end PUZZLES */
+];
 
 /* ═══════════════════════════════════════════════════════════════
    CARD DISTRIBUTION
@@ -1211,146 +914,117 @@ function assignCards(playerCount) {
   return [[0,2],[1,3]];
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CONSTANTS
-═══════════════════════════════════════════════════════════════ */
 const AVATARS = ["🧑‍💻","👩‍🔬","🧑‍🚀","👨‍🏫"];
 const COLORS  = ["#00d4ff","#a855f7","#10b981","#f59e0b"];
 const HDR_BG  = ["rgba(0,212,255,.1)","rgba(168,85,247,.1)","rgba(16,185,129,.1)","rgba(245,158,11,.1)"];
 
-/* ═══════════════════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════════════════ */
 const S = {
   players:[],room:0,timeLimit:5400,timeLeft:5400,
   hintsPerRoom:2,hintsThisRoom:0,totalHints:0,
   timerID:null,paused:false,scores:[],
   voteSelections:[],flagSelections:{},contribs:[],
   seqSelections:{},
-  playerFileUrl:'',
+  playerFileUrl:""
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   SCREEN
-═══════════════════════════════════════════════════════════════ */
 function showScreen(n){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+n).classList.add('active');
-  document.getElementById('hud').classList.toggle('visible',n==='game');
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("screen-"+n).classList.add("active");
+  document.getElementById("hud").classList.toggle("visible",n==="game");
   window.scrollTo(0,0);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SETUP
-═══════════════════════════════════════════════════════════════ */
 (function initSetup(){
-  const w = document.getElementById('setup-player-rows');
+  const w = document.getElementById("setup-player-rows");
   const borderColors = [
-    'rgba(0,212,255,.4)',
-    'rgba(168,85,247,.4)',
-    'rgba(16,185,129,.4)',
-    'rgba(245,158,11,.4)'
+    "rgba(0,212,255,.4)",
+    "rgba(168,85,247,.4)",
+    "rgba(16,185,129,.4)",
+    "rgba(245,158,11,.4)"
   ];
-  w.innerHTML = [0,1,2,3].map(i => `
-    <div class="player-row">
-      <span style="font-size:1.5rem;flex-shrink:0">${AVATARS[i]}</span>
-      <input type="text" id="pname-${i}"
-        placeholder="${i<2?'Player name (required)':'Player name (optional)'}"
-        maxlength="18" style="border-color:${borderColors[i]}"/>
-      <span style="font-size:.75rem;color:${COLORS[i]};white-space:nowrap">
-        ${i<2?'Required':'Optional'}
-      </span>
-    </div>`).join('');
+  w.innerHTML = [0,1,2,3].map(i =>
+    "<div class=\"player-row\">" +
+    "<span style=\"font-size:1.5rem;flex-shrink:0\">" + AVATARS[i] + "</span>" +
+    "<input type=\"text\" id=\"pname-" + i + "\"" +
+    " placeholder=\"" + (i < 2 ? "Player name (required)" : "Player name (optional)") + "\"" +
+    " maxlength=\"18\" style=\"border-color:" + borderColors[i] + "\"/>" +
+    "<span style=\"font-size:.75rem;color:" + COLORS[i] + ";white-space:nowrap\">" +
+    (i < 2 ? "Required" : "Optional") + "</span>" +
+    "</div>"
+  ).join("");
 })();
 
-/* ═══════════════════════════════════════════════════════════════
-   URL SHORTENER
-═══════════════════════════════════════════════════════════════ */
 async function shortenUrl(longUrl) {
   try {
-    const res = await fetch(
-      `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`
-    );
-    if (!res.ok) throw new Error('TinyURL failed');
+    const res = await fetch("https://tinyurl.com/api-create.php?url=" + encodeURIComponent(longUrl));
+    if (!res.ok) throw new Error("TinyURL failed");
     return await res.text();
-  } catch {
-    return longUrl; // fallback to full URL if API fails
+  } catch(e) {
+    return longUrl;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   GENERATE LINKS
-═══════════════════════════════════════════════════════════════ */
 async function generateLinks() {
   try {
     const names = [];
     for (let i = 0; i < 4; i++) {
-      const v = document.getElementById('pname-' + i).value.trim();
+      const v = document.getElementById("pname-" + i).value.trim();
       if (v) names.push(v);
     }
     if (names.length < 2) { alert("Please enter at least 2 player names!"); return; }
 
-    S.players      = names.map((n, i) => ({ name: n, avatar: AVATARS[i], color: COLORS[i] }));
+    S.players      = names.map((n, i) => ({ name:n, avatar:AVATARS[i], color:COLORS[i] }));
     S.scores       = names.map(() => 0);
-    S.timeLimit    = parseInt(document.getElementById('sel-time').value);
+    S.timeLimit    = parseInt(document.getElementById("sel-time").value);
     S.timeLeft     = S.timeLimit;
-    S.hintsPerRoom = parseInt(document.getElementById('sel-hints').value);
+    S.hintsPerRoom = parseInt(document.getElementById("sel-hints").value);
     S.room = 0; S.totalHints = 0;
 
-    const base = 'https://natalie-kurgan-35.github.io/aria-game/';
-    S.playerFileUrl = base + 'aria-player.html';
+    const base = "https://natalie-kurgan-35.github.io/aria-game/";
+    S.playerFileUrl = base + "aria-player.html";
 
-    // Show loading state while shortening
-    const grid = document.getElementById('player-links-grid');
-    grid.innerHTML = `
-      <p style="color:var(--muted);text-align:center;padding:20px">
-        ⏳ Generating links, please wait...
-      </p>`;
-    showScreen('lobby');
+    const grid = document.getElementById("player-links-grid");
+    grid.innerHTML = "<p style=\"color:var(--muted);text-align:center;padding:20px\">⏳ Generating links, please wait...</p>";
+    showScreen("lobby");
 
-    // Build long URLs then shorten all in parallel
     const longUrls  = S.players.map((_, i) => buildPlayerUrl(i, names.length));
     const shortUrls = await Promise.all(longUrls.map(u => shortenUrl(u)));
 
-    grid.innerHTML = S.players.map((p, i) => `
-      <div class="player-link-row">
-        <span class="plr-avatar">${p.avatar}</span>
-        <div class="plr-info">
-          <div class="plr-name" style="color:${p.color}">${p.name}</div>
-          <div class="plr-url" id="plr-url-${i}"
-               data-full-url="${shortUrls[i]}"
-               title="${shortUrls[i]}">${shortUrls[i]}</div>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="copyLink(${i})">📋 Copy</button>
-      </div>`).join('');
+    grid.innerHTML = S.players.map((p, i) =>
+      "<div class=\"player-link-row\">" +
+      "<span class=\"plr-avatar\">" + p.avatar + "</span>" +
+      "<div class=\"plr-info\">" +
+      "<div class=\"plr-name\" style=\"color:" + p.color + "\">" + p.name + "</div>" +
+      "<div class=\"plr-url\" id=\"plr-url-" + i + "\" data-full-url=\"" + shortUrls[i] + "\" title=\"" + shortUrls[i] + "\">" + shortUrls[i] + "</div>" +
+      "</div>" +
+      "<button class=\"btn btn-outline btn-sm\" onclick=\"copyLink(" + i + ")\">📋 Copy</button>" +
+      "</div>"
+    ).join("");
 
-  } catch (e) {
-    alert('ERROR: ' + e.message + '\n\nStack: ' + e.stack);
+  } catch(e) {
+    alert("ERROR: " + e.message);
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   BUILD PLAYER URL
-═══════════════════════════════════════════════════════════════ */
 function buildPlayerUrl(playerIndex, playerCount) {
   const p = S.players[playerIndex];
   const distribution = assignCards(playerCount);
   const myCardIndices = distribution[playerIndex];
 
-  const roles = PUZZLES.map(pz => {
-    let cardSet;
+  const roles = PUZZLES.map(function(pz) {
+    var cardSet;
     if (pz.fragments && pz.fragments.length) {
-      cardSet = pz.fragments.map(f => f.playerCard);
+      cardSet = pz.fragments.map(function(f){ return f.playerCard; });
     } else if (pz.roles && pz.roles.length) {
       cardSet = pz.roles;
     } else {
       cardSet = pz.cards;
     }
 
-    const myCards = myCardIndices.map(ci => {
-      const card = cardSet[ci];
+    var myCards = myCardIndices.map(function(ci) {
+      var card = cardSet[ci];
       if (!card) {
-        return { title:'Missing', clue:'Card not found.', task:'', cardIndex:ci, fragmentId:null };
+        return { title:"Missing", clue:"Card not found.", task:"", cardIndex:ci, fragmentId:null };
       }
       return {
         title:      card.title,
@@ -1365,168 +1039,152 @@ function buildPlayerUrl(playerIndex, playerCount) {
       roomId:    pz.id,
       roomTitle: pz.title,
       roomEye:   pz.eyebrow,
-      cards:     myCards,
+      cards:     myCards
     };
   });
 
-  const payload = {
-    playerIndex,
-    name: p.name, avatar: p.avatar, color: p.color,
-    roles,
+  var payload = {
+    playerIndex: playerIndex,
+    name:        p.name,
+    avatar:      p.avatar,
+    color:       p.color,
+    roles:       roles,
     totalRooms:  PUZZLES.length,
-    playerCount,
+    playerCount: playerCount
   };
 
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  return `${S.playerFileUrl}#d=${encoded}`;
+  var encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  return S.playerFileUrl + "#d=" + encoded;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   COPY LINK
-═══════════════════════════════════════════════════════════════ */
 function copyLink(i) {
-  const el = document.getElementById('plr-url-' + i);
-  navigator.clipboard.writeText(el.dataset.fullUrl)
-    .then(() => {
-      const btn = el.closest('.player-link-row').querySelector('button');
-      btn.textContent = '✅ Copied!';
-      setTimeout(() => btn.textContent = '📋 Copy', 2000);
-    });
+  var el = document.getElementById("plr-url-" + i);
+  navigator.clipboard.writeText(el.dataset.fullUrl).then(function() {
+    var btn = el.closest(".player-link-row").querySelector("button");
+    btn.textContent = "✅ Copied!";
+    setTimeout(function(){ btn.textContent = "📋 Copy"; }, 2000);
+  });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   START
-═══════════════════════════════════════════════════════════════ */
 function hostStartGame() {
-  buildHUD(); showScreen('game'); loadPuzzle(0); startTimer();
+  buildHUD(); showScreen("game"); loadPuzzle(0); startTimer();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HUD
-═══════════════════════════════════════════════════════════════ */
 function buildHUD() {
-  document.getElementById('hud-dots').innerHTML =
-    PUZZLES.map((_, i) => `<div class="hud-dot" id="hdot-${i}"></div>`).join('');
+  document.getElementById("hud-dots").innerHTML =
+    PUZZLES.map(function(_, i){ return "<div class=\"hud-dot\" id=\"hdot-" + i + "\"></div>"; }).join("");
   updateHUDDots(0);
 }
+
 function updateHUDDots(r) {
-  PUZZLES.forEach((_, i) => {
-    const d = document.getElementById('hdot-' + i);
-    if (d) d.className = 'hud-dot' + (i < r ? ' done' : i === r ? ' current' : '');
+  PUZZLES.forEach(function(_, i) {
+    var d = document.getElementById("hdot-" + i);
+    if (d) d.className = "hud-dot" + (i < r ? " done" : i === r ? " current" : "");
   });
-  document.getElementById('hud-room-lbl').textContent = `Chamber ${r+1} of ${PUZZLES.length}`;
+  document.getElementById("hud-room-lbl").textContent = "Chamber " + (r+1) + " of " + PUZZLES.length;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TIMER
-═══════════════════════════════════════════════════════════════ */
 function startTimer() {
   clearInterval(S.timerID);
-  S.timerID = setInterval(() => {
+  S.timerID = setInterval(function() {
     if (S.paused) return;
     S.timeLeft--;
-    const el = document.getElementById('hud-timer');
-    const m = String(Math.floor(S.timeLeft / 60)).padStart(2, '0');
-    const s = String(S.timeLeft % 60).padStart(2, '0');
-    el.textContent = `${m}:${s}`;
-    el.className = 'hud-timer' + (S.timeLeft <= 300 ? ' danger' : S.timeLeft <= 600 ? ' warn' : '');
+    var el = document.getElementById("hud-timer");
+    var m = String(Math.floor(S.timeLeft / 60)).padStart(2,"0");
+    var s = String(S.timeLeft % 60).padStart(2,"0");
+    el.textContent = m + ":" + s;
+    el.className = "hud-timer" + (S.timeLeft <= 300 ? " danger" : S.timeLeft <= 600 ? " warn" : "");
     if (S.timeLeft <= 0) { clearInterval(S.timerID); triggerFail(); }
   }, 1000);
 }
-function pauseGame()  { S.paused = true;  document.getElementById('pause-modal').classList.add('open'); }
-function resumeGame() { S.paused = false; document.getElementById('pause-modal').classList.remove('open'); }
+
+function pauseGame()  { S.paused = true;  document.getElementById("pause-modal").classList.add("open"); }
+function resumeGame() { S.paused = false; document.getElementById("pause-modal").classList.remove("open"); }
 function quitToMenu() {
   if (!confirm("Quit? All progress will be lost.")) return;
   clearInterval(S.timerID);
-  document.getElementById('pause-modal').classList.remove('open');
+  document.getElementById("pause-modal").classList.remove("open");
   location.reload();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   LOAD PUZZLE
-═══════════════════════════════════════════════════════════════ */
 function loadPuzzle(roomIndex) {
-  const pz = PUZZLES[roomIndex];
+  var pz = PUZZLES[roomIndex];
   S.room = roomIndex;
   S.hintsThisRoom = 0;
-  S.voteSelections = pz.type === 'vote' ? Array(pz.voteScenarios.length).fill(null) : [];
+  S.voteSelections = pz.type === "vote" ? Array(pz.voteScenarios.length).fill(null) : [];
   S.flagSelections = {};
-  S.contribs = Array(4).fill('');
+  S.contribs = Array(4).fill("");
   S.seqSelections = {};
 
   updateHUDDots(roomIndex);
-  document.getElementById('pz-eyebrow').textContent  = pz.eyebrow;
-  document.getElementById('pz-title').textContent    = pz.title;
-  document.getElementById('pz-type-lbl').textContent = pz.typeLabel;
-  document.getElementById('pz-progress').style.width = (roomIndex / PUZZLES.length * 100) + '%';
-  document.getElementById('pz-scenario').innerHTML   = pz.scenario;
+  document.getElementById("pz-eyebrow").textContent  = pz.eyebrow;
+  document.getElementById("pz-title").textContent    = pz.title;
+  document.getElementById("pz-type-lbl").textContent = pz.typeLabel;
+  document.getElementById("pz-progress").style.width = (roomIndex / PUZZLES.length * 100) + "%";
+  document.getElementById("pz-scenario").innerHTML   = pz.scenario;
 
-  const termEl = document.getElementById('pz-terminal');
+  var termEl = document.getElementById("pz-terminal");
   if (pz.terminal) {
-    termEl.classList.remove('hidden');
-    document.getElementById('pz-terminal-content').textContent = pz.terminal;
+    termEl.classList.remove("hidden");
+    document.getElementById("pz-terminal-content").textContent = pz.terminal;
   } else {
-    termEl.classList.add('hidden');
+    termEl.classList.add("hidden");
   }
 
   hideFeedback();
-  document.getElementById('hint-box').classList.remove('show');
+  document.getElementById("hint-box").classList.remove("show");
   updateHintUI();
-  document.getElementById('submit-btn').disabled = true;
-  document.getElementById('submit-status').textContent = 'Complete all sections to unlock submit.';
+  document.getElementById("submit-btn").disabled = true;
+  document.getElementById("submit-status").textContent = "Complete all sections to unlock submit.";
 
-  ['contrib-section','flag-section','vote-section','seq-section'].forEach(id => {
-    document.getElementById(id).classList.add('hidden');
+  ["contrib-section","flag-section","vote-section","seq-section"].forEach(function(id) {
+    document.getElementById(id).classList.add("hidden");
   });
 
-  if      (pz.type === 'sequence_build') buildSequenceBuild(pz);
-  else if (pz.type === 'build')          buildContribSection(pz);
-  else if (pz.type === 'flag')           buildFlagSection(pz);
-  else if (pz.type === 'vote')           buildVoteSection(pz);
+  if      (pz.type === "sequence_build") buildSequenceBuild(pz);
+  else if (pz.type === "build")          buildContribSection(pz);
+  else if (pz.type === "flag")           buildFlagSection(pz);
+  else if (pz.type === "vote")           buildVoteSection(pz);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SEQUENCE + BUILD (Chamber 1)
-═══════════════════════════════════════════════════════════════ */
 function buildSequenceBuild(pz) {
-  document.getElementById('seq-section').classList.remove('hidden');
-  document.getElementById('contrib-section').classList.remove('hidden');
-  document.getElementById('contrib-heading').textContent =
-    '✏️ Step 2 — Type each fragment\'s content into its agreed position';
+  document.getElementById("seq-section").classList.remove("hidden");
+  document.getElementById("contrib-section").classList.remove("hidden");
+  document.getElementById("contrib-heading").textContent = "✏️ Step 2 — Type each fragment's content into its agreed position";
 
-  document.getElementById('seq-rows').innerHTML =
-    pz.fragments.map(f => `
-      <div class="seq-row">
-        <span class="seq-label">${f.label}</span>
-        <select class="seq-select" id="seq-${f.id}" onchange="onSeqChange()">
-          <option value="">—</option>
-          ${[1,2,3,4].map(p => `<option value="${p}">${p}</option>`).join('')}
-        </select>
-        <span style="font-size:.78rem;color:var(--muted)">position in the prompt</span>
-      </div>`).join('');
+  document.getElementById("seq-rows").innerHTML = pz.fragments.map(function(f) {
+    return "<div class=\"seq-row\">" +
+      "<span class=\"seq-label\">" + f.label + "</span>" +
+      "<select class=\"seq-select\" id=\"seq-" + f.id + "\" onchange=\"onSeqChange()\">" +
+      "<option value=\"\">—</option>" +
+      [1,2,3,4].map(function(p){ return "<option value=\"" + p + "\">" + p + "</option>"; }).join("") +
+      "</select>" +
+      "<span style=\"font-size:.78rem;color:var(--muted)\">position in the prompt</span>" +
+      "</div>";
+  }).join("");
 
-  const grid = document.getElementById('contrib-grid');
-  grid.className = 'contrib-grid n2';
-  grid.innerHTML = [0,1,2,3].map(i => `
-    <div class="contrib-card" id="cc-${i}">
-      <div class="cc-header" style="background:rgba(168,85,247,.08)">
-        <span class="cc-name" style="color:var(--p1)">Position ${i+1}</span>
-        <span class="cc-badge empty" id="cc-badge-${i}">Empty</span>
-      </div>
-      <div class="cc-body">
-        <textarea class="cc-textarea" id="cc-ta-${i}"
-          placeholder="${pz.contribPlaceholders[i]}"
-          oninput="onContribInput(${i})"></textarea>
-      </div>
-    </div>`).join('');
+  var grid = document.getElementById("contrib-grid");
+  grid.className = "contrib-grid n2";
+  grid.innerHTML = [0,1,2,3].map(function(i) {
+    return "<div class=\"contrib-card\" id=\"cc-" + i + "\">" +
+      "<div class=\"cc-header\" style=\"background:rgba(168,85,247,.08)\">" +
+      "<span class=\"cc-name\" style=\"color:var(--p1)\">Position " + (i+1) + "</span>" +
+      "<span class=\"cc-badge empty\" id=\"cc-badge-" + i + "\">Empty</span>" +
+      "</div>" +
+      "<div class=\"cc-body\">" +
+      "<textarea class=\"cc-textarea\" id=\"cc-ta-" + i + "\"" +
+      " placeholder=\"" + pz.contribPlaceholders[i] + "\"" +
+      " oninput=\"onContribInput(" + i + ")\"></textarea>" +
+      "</div></div>";
+  }).join("");
 
   checkSeqBuildReady(pz);
 }
 
 function onSeqChange() {
-  const pz = PUZZLES[S.room];
-  pz.fragments.forEach(f => {
-    const v = document.getElementById('seq-' + f.id).value;
+  var pz = PUZZLES[S.room];
+  pz.fragments.forEach(function(f) {
+    var v = document.getElementById("seq-" + f.id).value;
     if (v) S.seqSelections[f.id] = parseInt(v);
     else   delete S.seqSelections[f.id];
   });
@@ -1534,290 +1192,259 @@ function onSeqChange() {
 }
 
 function checkSeqBuildReady(pz) {
-  const seqDone     = Object.keys(S.seqSelections).length === pz.fragments.length;
-  const contribDone = [0,1,2,3].every(i => (S.contribs[i] || '').length >= 20);
-  const allDone     = seqDone && contribDone;
-  document.getElementById('submit-btn').disabled = !allDone;
-  const seqCount    = Object.keys(S.seqSelections).length;
-  const contribCount = [0,1,2,3].filter(i => (S.contribs[i] || '').length >= 20).length;
-  document.getElementById('submit-status').textContent = allDone
-    ? 'Sequence and content complete. Submit when ready.'
-    : `Sequence: ${seqCount}/4 assigned · Content: ${contribCount}/4 filled.`;
+  var seqDone     = Object.keys(S.seqSelections).length === pz.fragments.length;
+  var contribDone = [0,1,2,3].every(function(i){ return (S.contribs[i] || "").length >= 20; });
+  var allDone     = seqDone && contribDone;
+  document.getElementById("submit-btn").disabled = !allDone;
+  var seqCount    = Object.keys(S.seqSelections).length;
+  var contribCount = [0,1,2,3].filter(function(i){ return (S.contribs[i] || "").length >= 20; }).length;
+  document.getElementById("submit-status").textContent = allDone
+    ? "Sequence and content complete. Submit when ready."
+    : "Sequence: " + seqCount + "/4 assigned · Content: " + contribCount + "/4 filled.";
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   BUILD TYPE — by issue, not by player (Chamber 4)
-═══════════════════════════════════════════════════════════════ */
 function buildContribSection(pz) {
-  document.getElementById('contrib-section').classList.remove('hidden');
-  document.getElementById('contrib-heading').textContent =
-    '✏️ Team Findings — Copy & paste from the draft above, then explain each problem';
+  document.getElementById("contrib-section").classList.remove("hidden");
+  document.getElementById("contrib-heading").textContent = "✏️ Team Findings — Copy and paste from the draft above, then explain each problem";
 
-  const grid  = document.getElementById('contrib-grid');
-  const count = pz.roles.length; // always all 4 issues regardless of player count
+  var grid  = document.getElementById("contrib-grid");
+  var count = pz.roles.length;
 
-  grid.className = 'contrib-grid n1';
-  grid.innerHTML = Array.from({length: count}, (_, i) => {
-    const role = pz.roles[i];
-    return `
-      <div class="contrib-card" id="cc-${i}">
-        <div class="cc-header" style="background:${HDR_BG[i]}">
-          <span class="cc-name" style="color:${COLORS[i]}">${role.title}</span>
-          <span class="cc-badge empty" id="cc-badge-${i}">Empty</span>
-        </div>
-        <div class="cc-body">
-          <div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;
-            line-height:1.6;background:rgba(255,255,255,.03);
-            border-radius:6px;padding:8px 10px">
-            📌 ${role.instructions}
-          </div>
-          <textarea class="cc-textarea" id="cc-ta-${i}"
-            placeholder="${role.placeholder}"
-            oninput="onContribInput(${i})"
-            style="min-height:100px"></textarea>
-        </div>
-      </div>`;
-  }).join('');
+  grid.className = "contrib-grid n1";
+  grid.innerHTML = Array.from({length: count}, function(_, i) {
+    var role = pz.roles[i];
+    return "<div class=\"contrib-card\" id=\"cc-" + i + "\">" +
+      "<div class=\"cc-header\" style=\"background:" + HDR_BG[i] + "\">" +
+      "<span class=\"cc-name\" style=\"color:" + COLORS[i] + "\">" + role.title + "</span>" +
+      "<span class=\"cc-badge empty\" id=\"cc-badge-" + i + "\">Empty</span>" +
+      "</div>" +
+      "<div class=\"cc-body\">" +
+      "<div style=\"font-size:.78rem;color:var(--muted);margin-bottom:10px;line-height:1.6;" +
+      "background:rgba(255,255,255,.03);border-radius:6px;padding:8px 10px\">📌 " + role.instructions + "</div>" +
+      "<textarea class=\"cc-textarea\" id=\"cc-ta-" + i + "\"" +
+      " placeholder=\"" + role.placeholder + "\"" +
+      " oninput=\"onContribInput(" + i + ")\" style=\"min-height:100px\"></textarea>" +
+      "</div></div>";
+  }).join("");
 
   checkBuildReady(count, pz);
 }
 
 function onContribInput(i) {
-  const pz  = PUZZLES[S.room];
-  const val = document.getElementById('cc-ta-' + i).value.trim();
+  var pz  = PUZZLES[S.room];
+  var val = document.getElementById("cc-ta-" + i).value.trim();
   S.contribs[i] = val;
-  const minLen = pz.roles?.[i]?.minLength || 20;
-  const filled = val.length >= minLen;
-  document.getElementById('cc-' + i).classList.toggle('filled', filled);
-  const badge = document.getElementById('cc-badge-' + i);
-  badge.textContent = filled ? '✅ Done' : 'Empty';
-  badge.className   = `cc-badge ${filled ? 'filled' : 'empty'}`;
-  if (pz.type === 'sequence_build') checkSeqBuildReady(pz);
+  var minLen = pz.roles && pz.roles[i] ? (pz.roles[i].minLength || 20) : 20;
+  var filled = val.length >= minLen;
+  document.getElementById("cc-" + i).classList.toggle("filled", filled);
+  var badge = document.getElementById("cc-badge-" + i);
+  badge.textContent = filled ? "✅ Done" : "Empty";
+  badge.className   = "cc-badge " + (filled ? "filled" : "empty");
+  if (pz.type === "sequence_build") checkSeqBuildReady(pz);
   else checkBuildReady(pz.roles.length, pz);
 }
 
 function checkBuildReady(count, pz) {
-  const done = Array.from({length: count}, (_, i) => {
-    const minLen = pz.roles?.[i]?.minLength || 20;
-    return (S.contribs[i] || '').length >= minLen;
+  var done = Array.from({length: count}, function(_, i) {
+    var minLen = pz.roles && pz.roles[i] ? (pz.roles[i].minLength || 20) : 20;
+    return (S.contribs[i] || "").length >= minLen;
   }).filter(Boolean).length;
-  const allDone = done === count;
-  document.getElementById('submit-btn').disabled = !allDone;
-  document.getElementById('submit-status').textContent = allDone
-    ? 'All sections filled. Submit when ready.'
-    : `${done}/${count} sections filled.`;
+  var allDone = done === count;
+  document.getElementById("submit-btn").disabled = !allDone;
+  document.getElementById("submit-status").textContent = allDone
+    ? "All sections filled. Submit when ready."
+    : done + "/" + count + " sections filled.";
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FLAG TYPE
-═══════════════════════════════════════════════════════════════ */
 function buildFlagSection(pz) {
-  document.getElementById('flag-section').classList.remove('hidden');
-  document.getElementById('flag-grid').innerHTML =
-    Object.entries(pz.claims).map(([k, claim]) => `
-      <div class="flag-claim">
-        <div class="flag-claim-label">Claim [${k}]</div>
-        <div class="flag-claim-text">${claim.text}</div>
-        <div class="flag-btns">
-          <button class="flag-btn" id="hf-${k}-ok"
-            onclick="hostFlag('${k}','ok')">✅ Accurate</button>
-          <button class="flag-btn" id="hf-${k}-flag"
-            onclick="hostFlag('${k}','flag')">❌ Error</button>
-        </div>
-      </div>`).join('');
+  document.getElementById("flag-section").classList.remove("hidden");
+  document.getElementById("flag-grid").innerHTML =
+    Object.entries(pz.claims).map(function(entry) {
+      var k = entry[0]; var claim = entry[1];
+      return "<div class=\"flag-claim\">" +
+        "<div class=\"flag-claim-label\">Claim [" + k + "]</div>" +
+        "<div class=\"flag-claim-text\">" + claim.text + "</div>" +
+        "<div class=\"flag-btns\">" +
+        "<button class=\"flag-btn\" id=\"hf-" + k + "-ok\" onclick=\"hostFlag('" + k + "','ok')\">✅ Accurate</button>" +
+        "<button class=\"flag-btn\" id=\"hf-" + k + "-flag\" onclick=\"hostFlag('" + k + "','flag')\">❌ Error</button>" +
+        "</div></div>";
+    }).join("");
   checkFlagReady(pz);
 }
+
 function hostFlag(claim, verdict) {
   S.flagSelections[claim] = verdict;
-  document.getElementById(`hf-${claim}-ok`).className =
-    'flag-btn' + (verdict === 'ok' ? ' ok-sel' : '');
-  document.getElementById(`hf-${claim}-flag`).className =
-    'flag-btn' + (verdict === 'flag' ? ' flag-sel' : '');
+  document.getElementById("hf-" + claim + "-ok").className =
+    "flag-btn" + (verdict === "ok" ? " ok-sel" : "");
+  document.getElementById("hf-" + claim + "-flag").className =
+    "flag-btn" + (verdict === "flag" ? " flag-sel" : "");
   checkFlagReady(PUZZLES[S.room]);
 }
+
 function checkFlagReady(pz) {
-  const total  = Object.keys(pz.claims).length;
-  const done   = Object.keys(S.flagSelections).length;
-  const allDone = done === total;
-  document.getElementById('submit-btn').disabled = !allDone;
-  document.getElementById('submit-status').textContent = allDone
-    ? 'All claims evaluated. Submit when ready.'
-    : `${done}/${total} claims evaluated.`;
+  var total  = Object.keys(pz.claims).length;
+  var done   = Object.keys(S.flagSelections).length;
+  var allDone = done === total;
+  document.getElementById("submit-btn").disabled = !allDone;
+  document.getElementById("submit-status").textContent = allDone
+    ? "All claims evaluated. Submit when ready."
+    : done + "/" + total + " claims evaluated.";
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   VOTE TYPE
-═══════════════════════════════════════════════════════════════ */
 function buildVoteSection(pz) {
-  document.getElementById('vote-section').classList.remove('hidden');
-  document.getElementById('vote-instructions').textContent = pz.voteInstructions;
-  document.getElementById('vote-options-wrap').innerHTML =
-    pz.voteScenarios.map((sc, si) => `
-      <div class="vote-scenario">
-        <div class="vote-scenario-label">${sc.label}</div>
-        <div class="vote-scenario-q">${sc.question}</div>
-        ${sc.options.map((opt, oi) => `
-          <div class="vote-opt" id="vopt-${si}-${oi}"
-            onclick="castVote(${si},${oi})">${opt}</div>`).join('')}
-      </div>`).join('');
+  document.getElementById("vote-section").classList.remove("hidden");
+  document.getElementById("vote-instructions").textContent = pz.voteInstructions;
+  document.getElementById("vote-options-wrap").innerHTML =
+    pz.voteScenarios.map(function(sc, si) {
+      return "<div class=\"vote-scenario\">" +
+        "<div class=\"vote-scenario-label\">" + sc.label + "</div>" +
+        "<div class=\"vote-scenario-q\">" + sc.question + "</div>" +
+        sc.options.map(function(opt, oi) {
+          return "<div class=\"vote-opt\" id=\"vopt-" + si + "-" + oi + "\" onclick=\"castVote(" + si + "," + oi + ")\">" + opt + "</div>";
+        }).join("") +
+        "</div>";
+    }).join("");
   checkVoteReady(pz);
 }
+
 function castVote(si, oi) {
-  const pz = PUZZLES[S.room];
-  pz.voteScenarios[si].options.forEach((_, j) => {
-    document.getElementById(`vopt-${si}-${j}`)?.classList.remove('selected');
+  var pz = PUZZLES[S.room];
+  pz.voteScenarios[si].options.forEach(function(_, j) {
+    var el = document.getElementById("vopt-" + si + "-" + j);
+    if (el) el.classList.remove("selected");
   });
   S.voteSelections[si] = pz.voteScenarios[si].options[oi];
-  document.getElementById(`vopt-${si}-${oi}`).classList.add('selected');
+  document.getElementById("vopt-" + si + "-" + oi).classList.add("selected");
   checkVoteReady(pz);
 }
+
 function checkVoteReady(pz) {
-  const done     = S.voteSelections.filter(v => v !== null).length;
-  const allVoted = done === pz.voteScenarios.length;
-  document.getElementById('submit-btn').disabled = !allVoted;
-  document.getElementById('submit-status').textContent = allVoted
-    ? 'All decisions made. Submit when ready.'
-    : `${done}/${pz.voteScenarios.length} decisions made.`;
+  var done     = S.voteSelections.filter(function(v){ return v !== null; }).length;
+  var allVoted = done === pz.voteScenarios.length;
+  document.getElementById("submit-btn").disabled = !allVoted;
+  document.getElementById("submit-status").textContent = allVoted
+    ? "All decisions made. Submit when ready."
+    : done + "/" + pz.voteScenarios.length + " decisions made.";
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SUBMIT
-═══════════════════════════════════════════════════════════════ */
 function submitAnswer() {
-  const pz = PUZZLES[S.room];
-  let pass = false;
+  var pz = PUZZLES[S.room];
+  var pass = false;
 
-  if (pz.type === 'sequence_build') {
-    const seqCorrect  = pz.fragments.every(f => S.seqSelections[f.id] === f.correctPosition);
-    const contentOk   = [0,1,2,3].every(i => (S.contribs[i] || '').length >= 20);
+  if (pz.type === "sequence_build") {
+    var seqCorrect  = pz.fragments.every(function(f){ return S.seqSelections[f.id] === f.correctPosition; });
+    var contentOk   = [0,1,2,3].every(function(i){ return (S.contribs[i] || "").length >= 20; });
     pass = seqCorrect && contentOk;
 
-  } else if (pz.type === 'build') {
-    pass = true; // content validated before submit is enabled
+  } else if (pz.type === "build") {
+    pass = true;
 
-  } else if (pz.type === 'flag') {
-    const flagged  = Object.entries(S.flagSelections)
-      .filter(([, v]) => v === 'flag').map(([k]) => k);
-    const correct  = flagged.filter(f =>  pz.correctFlags.includes(f));
-    const wrong    = flagged.filter(f => !pz.correctFlags.includes(f));
+  } else if (pz.type === "flag") {
+    var flagged  = Object.entries(S.flagSelections).filter(function(e){ return e[1] === "flag"; }).map(function(e){ return e[0]; });
+    var correct  = flagged.filter(function(f){ return pz.correctFlags.indexOf(f) !== -1; });
+    var wrong    = flagged.filter(function(f){ return pz.correctFlags.indexOf(f) === -1; });
     pass = correct.length >= pz.flagTarget && wrong.length === 0;
 
-  } else if (pz.type === 'vote') {
-    pass = pz.voteScenarios.every((sc, i) => S.voteSelections[i] === sc.correct);
+  } else if (pz.type === "vote") {
+    pass = pz.voteScenarios.every(function(sc, i){ return S.voteSelections[i] === sc.correct; });
   }
 
   if (pass) {
-    document.getElementById('submit-btn').disabled = true;
-    showFeedback('ok', pz.successMsg);
-    setTimeout(() => advanceRoom(), 3200);
+    document.getElementById("submit-btn").disabled = true;
+    showFeedback("ok", pz.successMsg);
+    setTimeout(function(){ advanceRoom(); }, 3200);
   } else {
-    showFeedback('err', pz.failMsg);
+    showFeedback("err", pz.failMsg);
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ADVANCE
-═══════════════════════════════════════════════════════════════ */
 function advanceRoom() {
   S.room++;
   if (S.room >= PUZZLES.length) { triggerVictory(); return; }
-  transition(`Accessing Chamber ${S.room + 1}...`, () => loadPuzzle(S.room));
-}
-function transition(msg, cb) {
-  const ov = document.getElementById('overlay');
-  document.getElementById('overlay-msg').textContent = msg;
-  ov.classList.add('show');
-  setTimeout(() => { cb(); ov.classList.remove('show'); }, 1800);
+  transition("Accessing Chamber " + (S.room + 1) + "...", function(){ loadPuzzle(S.room); });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HINTS
-═══════════════════════════════════════════════════════════════ */
+function transition(msg, cb) {
+  var ov = document.getElementById("overlay");
+  document.getElementById("overlay-msg").textContent = msg;
+  ov.classList.add("show");
+  setTimeout(function(){ cb(); ov.classList.remove("show"); }, 1800);
+}
+
 function useHint() {
-  const pz = PUZZLES[S.room];
-  if (S.hintsPerRoom === 0)              { alert("Hints disabled for this game! 💪"); return; }
+  var pz = PUZZLES[S.room];
+  if (S.hintsPerRoom === 0)              { alert("Hints disabled for this game!"); return; }
   if (S.hintsThisRoom >= S.hintsPerRoom) { alert("No more hints for this chamber!"); return; }
   if (S.hintsThisRoom >= pz.hints.length){ alert("No further hints available!"); return; }
-  document.getElementById('hint-box').textContent = pz.hints[S.hintsThisRoom];
-  document.getElementById('hint-box').classList.add('show');
+  document.getElementById("hint-box").textContent = pz.hints[S.hintsThisRoom];
+  document.getElementById("hint-box").classList.add("show");
   S.hintsThisRoom++; S.totalHints++;
   updateHintUI();
 }
+
 function updateHintUI() {
-  const rem = Math.max(0, S.hintsPerRoom - S.hintsThisRoom);
-  document.getElementById('hint-counter').textContent =
-    S.hintsPerRoom === 0 ? 'Hints disabled'
-      : `${rem} hint${rem !== 1 ? 's' : ''} remaining this chamber`;
-  document.getElementById('hint-btn').disabled = S.hintsPerRoom === 0 || rem === 0;
+  var rem = Math.max(0, S.hintsPerRoom - S.hintsThisRoom);
+  document.getElementById("hint-counter").textContent =
+    S.hintsPerRoom === 0 ? "Hints disabled"
+      : rem + " hint" + (rem !== 1 ? "s" : "") + " remaining this chamber";
+  document.getElementById("hint-btn").disabled = S.hintsPerRoom === 0 || rem === 0;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FEEDBACK
-═══════════════════════════════════════════════════════════════ */
 function showFeedback(type, msg) {
-  const el = document.getElementById('feedback-bar');
+  var el = document.getElementById("feedback-bar");
   el.textContent = msg;
-  el.className = `feedback-bar show ${type}`;
-  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
-}
-function hideFeedback() {
-  document.getElementById('feedback-bar').className = 'feedback-bar';
+  el.className = "feedback-bar show " + type;
+  el.scrollIntoView({ behavior:"smooth", block:"nearest" });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   VICTORY
-═══════════════════════════════════════════════════════════════ */
+function hideFeedback() {
+  document.getElementById("feedback-bar").className = "feedback-bar";
+}
+
 function triggerVictory() {
   clearInterval(S.timerID);
-  document.getElementById('hud').classList.remove('visible');
+  document.getElementById("hud").classList.remove("visible");
 
-  // Build per-chamber learning summaries
-  document.getElementById('victory-learnings').innerHTML =
-    PUZZLES.map(pz => `
-      <div class="learning-chamber">
-        <div class="learning-eyebrow">${pz.eyebrow}</div>
-        <div class="learning-title">${pz.title}</div>
-        <ul class="learning-list">
-          ${pz.debriefNotes.map(n => `<li>${n}</li>`).join('')}
-        </ul>
-      </div>`).join('');
+  document.getElementById("victory-learnings").innerHTML =
+    PUZZLES.map(function(pz) {
+      return "<div class=\"learning-chamber\">" +
+        "<div class=\"learning-eyebrow\">" + pz.eyebrow + "</div>" +
+        "<div class=\"learning-title\">" + pz.title + "</div>" +
+        "<ul class=\"learning-list\">" +
+        pz.debriefNotes.map(function(n){ return "<li>" + n + "</li>"; }).join("") +
+        "</ul></div>";
+    }).join("");
 
   buildDebriefNotes();
-  showScreen('victory');
+  showScreen("victory");
 }
 
 function buildDebriefNotes() {
-  document.getElementById('debrief-notes-content').innerHTML =
-    PUZZLES.map(pz => `
-      <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
-        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;
-          letter-spacing:.1em;margin-bottom:4px">${pz.eyebrow}</div>
-        <div style="font-weight:700;color:var(--p0);margin-bottom:6px">${pz.title}</div>
-        <div style="font-size:.83rem;color:var(--muted);font-style:italic;margin-bottom:10px">
-          💬 "${pz.debriefQuestion}"</div>
-        <ul style="font-size:.8rem;line-height:1.8;padding-left:16px;color:var(--text)">
-          ${pz.debriefNotes.map(n => `<li>${n}</li>`).join('')}
-        </ul>
-      </div>`).join('');
+  document.getElementById("debrief-notes-content").innerHTML =
+    PUZZLES.map(function(pz) {
+      return "<div style=\"margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)\">" +
+        "<div style=\"font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px\">" + pz.eyebrow + "</div>" +
+        "<div style=\"font-weight:700;color:var(--p0);margin-bottom:6px\">" + pz.title + "</div>" +
+        "<div style=\"font-size:.83rem;color:var(--muted);font-style:italic;margin-bottom:10px\">💬 \"" + pz.debriefQuestion + "\"</div>" +
+        "<ul style=\"font-size:.8rem;line-height:1.8;padding-left:16px;color:var(--text)\">" +
+        pz.debriefNotes.map(function(n){ return "<li>" + n + "</li>"; }).join("") +
+        "</ul></div>";
+    }).join("");
 }
 
 function toggleDebrief() {
-  const el = document.getElementById('debrief-notes');
-  el.classList.toggle('hidden');
-  if (!el.classList.contains('hidden'))
-    el.scrollIntoView({ behavior:'smooth', block:'start' });
+  var el = document.getElementById("debrief-notes");
+  el.classList.toggle("hidden");
+  if (!el.classList.contains("hidden"))
+    el.scrollIntoView({ behavior:"smooth", block:"start" });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FAIL
-═══════════════════════════════════════════════════════════════ */
 function triggerFail() {
   clearInterval(S.timerID);
-  document.getElementById('hud').classList.remove('visible');
-  document.getElementById('fail-room').textContent =
-    `Chamber ${S.room + 1} of ${PUZZLES.length}`;
-  document.getElementById('fail-hints').textContent = S.totalHints;
-  showScreen('fail');
+  document.getElementById("hud").classList.remove("visible");
+  document.getElementById("fail-room").textContent = "Chamber " + (S.room + 1) + " of " + PUZZLES.length;
+  document.getElementById("fail-hints").textContent = S.totalHints;
+  showScreen("fail");
 }
 </script>
 </body>
