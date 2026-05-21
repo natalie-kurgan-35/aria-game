@@ -604,10 +604,10 @@ const PUZZLES = [
     "Position 4 — Fragment content"
   ],
   contribPlaceholders:[
-    "Type the content of the fragment the team agrees belongs first...",
-    "Type the content of the fragment the team agrees belongs second...",
-    "Type the content of the fragment the team agrees belongs third...",
-    "Type the content of the fragment the team agrees belongs fourth..."
+    "The type of content to put first...",
+    "The type of content to put second...",
+    "The type of content to put third...",
+    "The type of content to put fourth..."
   ],
   correctSequence:["C","A","D","B"],
   hints:[
@@ -1150,7 +1150,7 @@ function loadPuzzle(roomIndex) {
 function buildSequenceBuild(pz) {
   document.getElementById("seq-section").classList.remove("hidden");
   document.getElementById("contrib-section").classList.remove("hidden");
-  document.getElementById("contrib-heading").textContent = "✏️ Step 2 — Type each fragment's content into its agreed position";
+  document.getElementById("contrib-heading").textContent = "✏️ Step 2 — Summarize the correct way to create a prompt (in general)";
 
   document.getElementById("seq-rows").innerHTML = pz.fragments.map(function(f) {
     return "<div class=\"seq-row\">" +
