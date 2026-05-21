@@ -92,7 +92,7 @@ select{padding:8px 12px;font-size:.9rem}
 .plr-avatar{font-size:1.8rem;flex-shrink:0}
 .plr-info{flex:1;min-width:160px}
 .plr-name{font-weight:700;font-size:.95rem}
-.plr-url{font-size:.68rem;color:var(--muted);word-break:break-all;
+.plr-url{font-size:.78rem;color:var(--muted);word-break:break-all;
   margin-top:3px;font-family:'Courier New',monospace}
 .steps-card{background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.2);
   border-radius:14px;padding:20px;width:100%;max-width:900px}
@@ -139,17 +139,10 @@ select{padding:8px 12px;font-size:.9rem}
   font-size:.83rem;color:var(--p0);line-height:1.8;white-space:pre-wrap}
 .aria-label{font-size:.72rem;letter-spacing:.12em;color:var(--muted);
   margin-bottom:8px;display:block}
-.ready-strip{display:flex;gap:10px;flex-wrap:wrap}
-.ready-chip{display:flex;align-items:center;gap:7px;background:var(--panel);
-  border:1px solid var(--border);border-radius:999px;padding:5px 12px;
-  font-size:.8rem;cursor:pointer;transition:all .3s}
-.ready-chip.ready{border-color:var(--success);background:rgba(16,185,129,.08)}
-.ready-dot{width:8px;height:8px;border-radius:50%;
-  background:var(--border);transition:background .3s}
-.ready-chip.ready .ready-dot{background:var(--success);box-shadow:0 0 5px var(--success)}
 
 /* BUILD */
 .contrib-grid{display:grid;gap:14px}
+.contrib-grid.n1{grid-template-columns:1fr}
 .contrib-grid.n2{grid-template-columns:1fr 1fr}
 .contrib-grid.n3{grid-template-columns:1fr 1fr 1fr}
 .contrib-grid.n4{grid-template-columns:1fr 1fr}
@@ -231,20 +224,19 @@ select{padding:8px 12px;font-size:.9rem}
   border-top-color:var(--p0);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* VICTORY / FAIL */
+/* VICTORY */
 #screen-victory{justify-content:center;text-align:center;gap:22px;padding:40px 20px}
 #screen-fail{justify-content:center;text-align:center;gap:22px;padding:40px 20px}
 .trophy-bounce{font-size:4rem;animation:bounce 1.2s ease-in-out infinite alternate}
 @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-14px)}}
-.stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
-  gap:14px;width:100%;max-width:800px}
-.stat-box{background:var(--panel);border:1px solid var(--border);
-  border-radius:12px;padding:18px;text-align:center}
-.stat-val{font-size:2rem;font-weight:800;color:var(--p0)}
-.stat-lbl{font-size:.75rem;color:var(--muted);margin-top:4px}
-.lb-row{display:flex;align-items:center;justify-content:space-between;
-  padding:11px 16px;border-bottom:1px solid var(--border)}
-.lb-row:last-child{border-bottom:none}
+
+/* VICTORY LEARNINGS */
+.learning-chamber{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.learning-chamber:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.learning-eyebrow{font-size:.7rem;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:4px}
+.learning-title{font-weight:700;color:var(--p0);margin-bottom:8px}
+.learning-list{font-size:.82rem;line-height:1.9;padding-left:16px;color:var(--text)}
 
 @media(max-width:700px){
   .contrib-grid.n2,.contrib-grid.n3,.contrib-grid.n4{grid-template-columns:1fr}
@@ -301,7 +293,6 @@ select{padding:8px 12px;font-size:.9rem}
       An AI literacy escape room · 2–4 players · 90 minutes
     </p>
   </div>
-
   <div class="mission-card">
     <div style="font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;
       color:var(--p0);margin-bottom:12px">⚡ MISSION BRIEFING</div>
@@ -326,7 +317,6 @@ select{padding:8px 12px;font-size:.9rem}
       ⚠️ The clock starts the moment you enter the first chamber. Work fast — but work smart.
     </p>
   </div>
-
   <div class="how-grid">
     <div class="how-card">
       <div class="how-icon">🖥️</div>
@@ -349,7 +339,6 @@ select{padding:8px 12px;font-size:.9rem}
       <div class="how-desc">Each chamber tests a different skill. A wrong answer keeps the chamber locked — no hints from the system. Reason it out.</div>
     </div>
   </div>
-
   <button class="btn btn-primary btn-lg" onclick="showScreen('setup')" style="margin-bottom:40px">
     🚀 Set Up Game
   </button>
@@ -458,11 +447,6 @@ select{padding:8px 12px;font-size:.9rem}
       <span class="text-xs text-muted" id="pz-type-lbl"></span>
     </div>
 
-    <div>
-      <p class="text-xs text-muted mb-8">🃏 Click a player's chip once they confirm they've read their briefing:</p>
-      <div class="ready-strip" id="ready-strip"></div>
-    </div>
-
     <div class="scenario-panel" id="pz-scenario"></div>
     <div class="aria-terminal hidden" id="pz-terminal">
       <span class="aria-label">▸ ARIA OUTPUT — READ THIS TOGETHER</span>
@@ -524,18 +508,10 @@ select{padding:8px 12px;font-size:.9rem}
   <div class="trophy-bounce">🏆</div>
   <h1 class="gradient-text">ARIA Restored!</h1>
   <p class="text-muted" style="max-width:500px">
-    Outstanding work. All five chambers cleared. ARIA is back online and the Meridian proposal is safe.
+    Outstanding work. All five chambers cleared. ARIA is back online
+    and the Meridian proposal is safe.
   </p>
-  <div class="stat-strip">
-    <div class="stat-box"><div class="stat-val" id="v-time">--:--</div><div class="stat-lbl">⏱ Time Remaining</div></div>
-    <div class="stat-box"><div class="stat-val" id="v-hints">0</div><div class="stat-lbl">💡 Hints Used</div></div>
-    <div class="stat-box"><div class="stat-val" id="v-score">0</div><div class="stat-lbl">⭐ Team Score</div></div>
-    <div class="stat-box"><div class="stat-val">5/5</div><div class="stat-lbl">🔐 Chambers Cleared</div></div>
-  </div>
-  <div class="card" style="max-width:700px">
-    <h3 class="mb-12">🏅 Player Scores</h3>
-    <div id="v-lb"></div>
-  </div>
+
   <div class="card" style="max-width:700px;text-align:left">
     <h3 style="color:var(--p0)">🤖 ARIA's Debrief</h3>
     <div class="divider"></div>
@@ -549,10 +525,17 @@ select{padding:8px 12px;font-size:.9rem}
       > Meridian proposal secured. — ARIA v4.2 ✓
     </p>
   </div>
+
+  <div class="card" style="max-width:700px;text-align:left">
+    <h3 style="color:var(--p1)" class="mb-12">📋 What You Learned</h3>
+    <div id="victory-learnings"></div>
+  </div>
+
   <div class="flex gap-12 flex-wrap" style="justify-content:center">
     <button class="btn btn-primary btn-lg" onclick="location.reload()">🔄 Play Again</button>
-    <button class="btn btn-outline btn-lg" onclick="toggleDebrief()">📋 Debrief Notes</button>
+    <button class="btn btn-outline btn-lg" onclick="toggleDebrief()">📋 Facilitator Notes</button>
   </div>
+
   <div class="card hidden" id="debrief-notes" style="max-width:700px;text-align:left">
     <h3 style="color:var(--p0)" class="mb-12">📋 Facilitator Debrief Notes</h3>
     <div id="debrief-notes-content"></div>
@@ -574,12 +557,6 @@ select{padding:8px 12px;font-size:.9rem}
 <script>
 /* ═══════════════════════════════════════════════════════════════
    PUZZLE DATA
-   ─────────────────────────────────────────────────────────────
-   Each puzzle has a `cards` array of length 4.
-   assignCards(playerCount) distributes them across players:
-     4 players → one card each
-     3 players → P0 gets cards[0]+cards[3], P1 gets cards[1], P2 gets cards[2]
-     2 players → P0 gets cards[0]+cards[2], P1 gets cards[1]+cards[3]
 ═══════════════════════════════════════════════════════════════ */
 const PUZZLES = [
 
@@ -599,7 +576,6 @@ const PUZZLES = [
     about how a well-structured AI prompt is built before you commit to an order.`,
   terminal:null,
   type:'sequence_build',
-  /* The four fragments — order matters. Correct sequence: 2,4,1,3 */
   fragments:[
     {
       id:'A',
@@ -667,7 +643,6 @@ const PUZZLES = [
       }
     }
   ],
-  /* Contribution labels for the build section (after sequence is agreed) */
   contribLabels:[
     "Position 1 — Fragment content",
     "Position 2 — Fragment content",
@@ -680,7 +655,6 @@ const PUZZLES = [
     "Type the content of whichever fragment the team agrees belongs third...",
     "Type the content of whichever fragment the team agrees belongs fourth...",
   ],
-  /* Correct sequence: C(1), A(2), D(3), B(4) */
   correctSequence:['C','A','D','B'],
   hints:[
     "💡 Think about how you would brief a human assistant. What do they need to know first — the task, the audience, the facts, or the format?",
@@ -752,7 +726,6 @@ Alex Chen
 Project Lead`,
   type:'flag',
   flagTarget:4,
-  /* Correct flags: A, B, C, G, H  — D, E, F are true */
   correctFlags:['A','B','C','G','H'],
   claims:{
     A:{ text:"Phase 2 is complete and signed off by both the client facilities team and the steering committee." },
@@ -764,7 +737,6 @@ Project Lead`,
     G:{ text:"Alex Chen will be joined by the full project steering committee at the Thursday call." },
     H:{ text:"This update has been reviewed and approved by the Meridian account director prior to sending." }
   },
-  /* Player cards — expertise, not answers */
   cards:[
     {
       title:"📁 Project Status Dossier",
@@ -895,13 +867,13 @@ Correct all four assignments to restore the registry.`,
       correct:"GitHub Copilot",
       ariaWrong:"ChatGPT cannot process CAD files or perform spatial analysis. This task requires code to parse technical file formats — GitHub Copilot is the right fit."
     },
-  {
-  label:"Task 3 — Project cost modelling",
-  question:"Build a dynamic cost model that calculates project costs under different scenarios (delay, scope change, resource change). Must be auditable and formula-driven.",
-  options:["Microsoft Designer","ChatGPT / Copilot (text)","GitHub Copilot","Power BI + AI"],
-  correct:"Power BI + AI",
-  ariaWrong:"GitHub Copilot writes code — but a code-based financial model is not auditable by a client finance team. They expect formula-driven, visual scenario outputs."
-},
+    {
+      label:"Task 3 — Project cost modelling",
+      question:"Build a dynamic cost model that calculates project costs under different scenarios (delay, scope change, resource change). Must be auditable and formula-driven.",
+      options:["Microsoft Designer","ChatGPT / Copilot (text)","GitHub Copilot","Power BI + AI"],
+      correct:"Power BI + AI",
+      ariaWrong:"GitHub Copilot writes code — but a code-based financial model is not auditable by a client finance team. They expect formula-driven, visual scenario outputs."
+    },
     {
       label:"Task 4 — Client sentiment analysis",
       question:"Run sentiment analysis across 18 months of client email correspondence. Identify trend shifts, flag negative sentiment spikes, and produce a summary for the account team.",
@@ -987,16 +959,14 @@ Correct all four assignments to restore the registry.`,
   id:4,
   title:"The Proposal Draft",
   eyebrow:"CHAMBER 4 — OUTPUT QUALITY CONTROL",
-  typeLabel:"Specialist Editorial Review",
+  typeLabel:"Editorial Review",
   scenario:`<strong>Situation:</strong> ARIA has produced a first draft of the Meridian Logistics
     proposal using the corrected tool assignments. The draft is below.<br><br>
-    It is not ready to send. Each member of the recovery team is a specialist editor with
-    a <strong>specific type of problem to find</strong>. Your briefing tells you what to
-    look for — not where to find it.<br><br>
-    Read the draft together on the shared screen. Then each player shares their findings
-    verbally. The host types the team's agreed findings into each specialist's section below.<br><br>
-    <strong>Each specialist must find every instance of their problem type.
-    Missing even one will keep the chamber locked.</strong>`,
+    It is not ready to send. Read the draft together on the shared screen, then use the
+    four answer boxes below to record the team's findings.<br><br>
+    <strong>For each category: copy and paste the exact words or phrases from the draft
+    into the answer box, then explain what should replace them.</strong>
+    Missing even one instance of a problem type will keep the chamber locked.`,
   terminal:`ARIA DRAFT — MERIDIAN LOGISTICS PROPOSAL v0.1
 ════════════════════════════════════════════════════════════
 
@@ -1039,81 +1009,44 @@ exciting journey going forward.
 Best regards,
 The Team 😊👍🎉`,
   type:'build',
-  /* 4 specialist roles */
   roles:[
     {
-      title:"🗑️ Jargon & Buzzword Specialist",
-      clue:`Your job is to find every instance of <strong>corporate jargon, buzzwords, and
-        empty superlatives</strong> in the draft — phrases that sound impressive but carry
-        no specific meaning.<br><br>
-        You are looking for things like words that could be removed without changing the
-        meaning, phrases that substitute vague grandeur for specific claims, and adjectives
-        that are stacked purely for effect rather than accuracy.<br><br>
-        <strong>There are at least 8 distinct jargon/buzzword problems in this draft.</strong>
-        Find them all and note what plain-English replacement each one needs.`,
-      task:"List every jargon phrase or buzzword you find and suggest a plain replacement for each.",
-      placeholder:"Describe each jargon problem you find and what should replace it...",
-      minLength:120,
-      debriefNote:"AI trained on business writing mirrors the worst habits of corporate language. Jargon is the most common quality failure in AI-generated professional documents."
+      title:"🗑️ Jargon & Buzzwords",
+      instructions:"Copy and paste each jargon word or buzzword directly from the draft above. Then write what plain-English replacement it needs.",
+      placeholder:"e.g. 'synergistic cross-functional paradigms' → replace with 'working together across teams'\n'end-to-end value chain' → replace with 'full project process'...",
+      minLength:120
     },
     {
-      title:"📊 Vagueness & Missing Information Specialist",
-      clue:`Your job is to find every instance of <strong>vague commitment, missing specifics,
-        and uncommitted language</strong> in the draft — places where a real proposal must
-        give concrete information but this one gives none.<br><br>
-        A professional proposal must answer: Who exactly is doing this? What exactly will
-        be delivered? By when (specific date)? At what cost (specific figure or range)?
-        What are the measurable success criteria?<br><br>
-        <strong>There are at least 6 distinct vagueness problems in this draft.</strong>
-        For each one, note what specific information should replace it.`,
-      task:"List every vague or uncommitted statement and describe what concrete information should replace it.",
-      placeholder:"Describe each vagueness problem and what specific information is needed...",
-      minLength:100,
-      debriefNote:"Vagueness is AI's way of appearing comprehensive while committing to nothing. It sounds complete but is legally and commercially worthless."
+      title:"📊 Vague or Missing Information",
+      instructions:"Copy and paste each vague phrase directly from the draft. Then describe what specific information should replace it.",
+      placeholder:"e.g. 'completed soon' → replace with a specific delivery date\n'very experienced' → replace with named team members and relevant credentials...",
+      minLength:100
     },
     {
-      title:"⚠️ Fabricated Statistics Specialist",
-      clue:`Your job is to find every <strong>statistic, percentage, or quantified claim</strong>
-        in the draft and assess whether it is credible and sourced.<br><br>
-        You are looking for: precise numbers with no source cited, statistics that are
-        suspiciously round or extreme, absolute claims that allow for no exceptions,
-        and figures that contradict what is generally known about AI adoption.<br><br>
-        <strong>There are exactly 4 statistics in this draft. Assess each one.</strong>
-        For each fabricated or unsourced statistic, explain why it is problematic and
-        what should replace it.`,
-      task:"Identify every statistic in the draft, assess whether it is credible, and explain what should replace the problematic ones.",
-      placeholder:"List each statistic, assess its credibility, and describe the problem...",
-      minLength:100,
-      debriefNote:"AI generates plausible-sounding statistics with no basis in reality. A single fabricated statistic in a client proposal can destroy professional credibility."
+      title:"⚠️ Fabricated or Unsourced Statistics",
+      instructions:"Copy and paste each statistic directly from the draft. Then explain why it is problematic and what should replace it.",
+      placeholder:"e.g. '97% of companies see ROI within 6 weeks' → no source cited, implausible claim, replace with verified data or remove entirely...",
+      minLength:100
     },
     {
-      title:"✂️ Formatting & Wordiness Specialist",
-      clue:`Your job is to find every instance of <strong>inappropriate formatting, excessive
-        wordiness, redundant phrasing, and unprofessional visual elements</strong>.<br><br>
-        You are looking for: emojis in a professional document, unnecessary bold text applied
-        to random phrases rather than genuinely important information, bullet points used
-        where they add no value or break up content that should flow as prose, and wordy
-        phrases that can be cut without losing meaning.<br><br>
-        <strong>There are at least 10 distinct formatting/wordiness problems in this draft.</strong>
-        Find them all.`,
-      task:"List every formatting and wordiness problem — emojis, unnecessary bold, bad bullets, and wordy phrases.",
-      placeholder:"List each formatting or wordiness problem and how it should be fixed...",
-      minLength:120,
-      debriefNote:"AI defaults to heavy formatting because it signals effort. In professional documents, excessive formatting is a red flag — it substitutes visual noise for substance."
+      title:"✂️ Formatting & Wordiness Problems",
+      instructions:"Copy and paste each problematic phrase, emoji, or formatting element from the draft. Then describe how it should be fixed.",
+      placeholder:"e.g. '🚀 EXCITING PROJECT PROPOSAL 🚀' → remove emojis, replace with plain professional heading\n'going forward in the future' → redundant, remove 'in the future'...",
+      minLength:120
     }
   ],
   hints:[
     "💡 Work through the draft section by section rather than all at once. Each paragraph contains multiple problems across different categories.",
-    "💡 Jargon specialist: count the stacked adjectives. Vagueness specialist: every sentence with 'will be confirmed', 'soon', 'very', or 'in line with'. Stats specialist: there are exactly four numbers. Formatting specialist: count every emoji, every bold phrase, and every bullet.",
+    "💡 Jargon: count the stacked adjectives. Vagueness: look for 'soon', 'very', 'in line with', 'confirmed at a later stage'. Stats: there are exactly four numbers. Formatting: count every emoji, every bold phrase, and every wordy construction.",
   ],
   successMsg:"✅ Editorial review complete. The proposal is ready for human sign-off. Chamber 4 unlocked.",
-  failMsg:"🔒 The chamber remains locked. One or more specialist sections are incomplete or too brief. Each specialist must account for every instance of their problem type.",
+  failMsg:"🔒 The chamber remains locked. One or more sections are incomplete. Each box must account for every instance of that problem type — copy and paste from the draft.",
   debriefQuestion:"Which category of problem was most surprising to find in an AI-generated document? What does this tell you about how to use AI for professional writing?",
   debriefNotes:[
     "Jargon (8+): 'synergistic cross-functional paradigms', 'holistically optimise', 'end-to-end value chain', 'cutting-edge', 'best-in-class', 'industry-leading', 'digital journey', 'transformative'.",
     "Vagueness (6+): 'completed soon', 'very experienced', 'in line with market rates', 'confirmed at a later stage', 'things will improve', 'costs may be reduced'.",
     "Fabricated stats (4): 97% ROI in 6 weeks, 340% productivity increase, 89-point satisfaction improvement, zero negative outcomes — all unsourced and implausible.",
-    "Formatting/wordiness (10+): 3 emojis (header, sign-off), excessive bold throughout, bullet list with no specifics, 'going forward in the future', 'do not hesitate to feel free', 'at your earliest possible convenience', 'questions, queries, or concerns', 'hopefully potentially', 'excited and thrilled' (redundant pair)."
+    "Formatting/wordiness (10+): 3 emojis (header, sign-off), excessive bold throughout, bullet list with no specifics, 'going forward in the future', 'do not hesitate to feel free', 'at your earliest possible convenience', 'questions, queries, or concerns', 'hopefully potentially', 'excited and thrilled'."
   ]
 },
 
@@ -1270,21 +1203,19 @@ The Team 😊👍🎉`,
 
 /* ═══════════════════════════════════════════════════════════════
    CARD DISTRIBUTION
-   assignCards(playerCount) returns an array of length playerCount.
-   Each element is an array of card indices from PUZZLES[r].cards.
 ═══════════════════════════════════════════════════════════════ */
 function assignCards(playerCount) {
   if (playerCount === 4) return [[0],[1],[2],[3]];
   if (playerCount === 3) return [[0,3],[1],[2]];
-  /* 2 players */           return [[0,2],[1,3]];
+  return [[0,2],[1,3]];
 }
 
 /* ═══════════════════════════════════════════════════════════════
    CONSTANTS
 ═══════════════════════════════════════════════════════════════ */
-const AVATARS   = ["🧑‍💻","👩‍🔬","🧑‍🚀","👨‍🏫"];
-const COLORS    = ["#00d4ff","#a855f7","#10b981","#f59e0b"];
-const HDR_BG    = ["rgba(0,212,255,.1)","rgba(168,85,247,.1)","rgba(16,185,129,.1)","rgba(245,158,11,.1)"];
+const AVATARS = ["🧑‍💻","👩‍🔬","🧑‍🚀","👨‍🏫"];
+const COLORS  = ["#00d4ff","#a855f7","#10b981","#f59e0b"];
+const HDR_BG  = ["rgba(0,212,255,.1)","rgba(168,85,247,.1)","rgba(16,185,129,.1)","rgba(245,158,11,.1)"];
 
 /* ═══════════════════════════════════════════════════════════════
    STATE
@@ -1312,14 +1243,14 @@ function showScreen(n){
    SETUP
 ═══════════════════════════════════════════════════════════════ */
 (function initSetup(){
-  const w=document.getElementById('setup-player-rows');
-  const borderColors=[
+  const w = document.getElementById('setup-player-rows');
+  const borderColors = [
     'rgba(0,212,255,.4)',
     'rgba(168,85,247,.4)',
     'rgba(16,185,129,.4)',
     'rgba(245,158,11,.4)'
   ];
-  w.innerHTML=[0,1,2,3].map(i=>`
+  w.innerHTML = [0,1,2,3].map(i => `
     <div class="player-row">
       <span style="font-size:1.5rem;flex-shrink:0">${AVATARS[i]}</span>
       <input type="text" id="pname-${i}"
@@ -1332,74 +1263,92 @@ function showScreen(n){
 })();
 
 /* ═══════════════════════════════════════════════════════════════
+   URL SHORTENER
+═══════════════════════════════════════════════════════════════ */
+async function shortenUrl(longUrl) {
+  try {
+    const res = await fetch(
+      `https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`
+    );
+    if (!res.ok) throw new Error('TinyURL failed');
+    return await res.text();
+  } catch {
+    return longUrl; // fallback to full URL if API fails
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    GENERATE LINKS
 ═══════════════════════════════════════════════════════════════ */
-
-
-
-function generateLinks(){
+async function generateLinks() {
   try {
-    const names=[];
-    for(let i=0;i<4;i++){
-      const v=document.getElementById('pname-'+i).value.trim();
-      if(v)names.push(v);
+    const names = [];
+    for (let i = 0; i < 4; i++) {
+      const v = document.getElementById('pname-' + i).value.trim();
+      if (v) names.push(v);
     }
-    if(names.length<2){alert("Please enter at least 2 player names!");return;}
+    if (names.length < 2) { alert("Please enter at least 2 player names!"); return; }
 
-    S.players   = names.map((n,i)=>({name:n,avatar:AVATARS[i],color:COLORS[i]}));
-    S.scores    = names.map(()=>0);
-    S.timeLimit = parseInt(document.getElementById('sel-time').value);
-    S.timeLeft  = S.timeLimit;
+    S.players      = names.map((n, i) => ({ name: n, avatar: AVATARS[i], color: COLORS[i] }));
+    S.scores       = names.map(() => 0);
+    S.timeLimit    = parseInt(document.getElementById('sel-time').value);
+    S.timeLeft     = S.timeLimit;
     S.hintsPerRoom = parseInt(document.getElementById('sel-hints').value);
-    S.room=0; S.totalHints=0;
+    S.room = 0; S.totalHints = 0;
 
-  const base = 'https://natalie-kurgan-35.github.io/aria-game/';
-S.playerFileUrl = base + 'aria-player.html';
+    const base = 'https://natalie-kurgan-35.github.io/aria-game/';
+    S.playerFileUrl = base + 'aria-player.html';
 
-    // ✅ Build grid with truncated display but full URL stored in data attribute
+    // Show loading state while shortening
     const grid = document.getElementById('player-links-grid');
-    grid.innerHTML = S.players.map((p,i) => {
-      const fullUrl = buildPlayerUrl(i, names.length);
-      const shortDisplay = fullUrl.substring(0, 60) + '…';
-      return `
-        <div class="player-link-row">
-          <span class="plr-avatar">${p.avatar}</span>
-          <div class="plr-info">
-            <div class="plr-name" style="color:${p.color}">${p.name}</div>
-            <div class="plr-url" id="plr-url-${i}"
-                 data-full-url="${fullUrl}"
-                 title="${fullUrl}">${shortDisplay}</div>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="copyLink(${i})">📋 Copy</button>
-        </div>`;
-    }).join('');
-
+    grid.innerHTML = `
+      <p style="color:var(--muted);text-align:center;padding:20px">
+        ⏳ Generating links, please wait...
+      </p>`;
     showScreen('lobby');
 
-  } catch(e) {
+    // Build long URLs then shorten all in parallel
+    const longUrls  = S.players.map((_, i) => buildPlayerUrl(i, names.length));
+    const shortUrls = await Promise.all(longUrls.map(u => shortenUrl(u)));
+
+    grid.innerHTML = S.players.map((p, i) => `
+      <div class="player-link-row">
+        <span class="plr-avatar">${p.avatar}</span>
+        <div class="plr-info">
+          <div class="plr-name" style="color:${p.color}">${p.name}</div>
+          <div class="plr-url" id="plr-url-${i}"
+               data-full-url="${shortUrls[i]}"
+               title="${shortUrls[i]}">${shortUrls[i]}</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="copyLink(${i})">📋 Copy</button>
+      </div>`).join('');
+
+  } catch (e) {
     alert('ERROR: ' + e.message + '\n\nStack: ' + e.stack);
   }
 }
 
-function buildPlayerUrl(playerIndex, playerCount){
+/* ═══════════════════════════════════════════════════════════════
+   BUILD PLAYER URL
+═══════════════════════════════════════════════════════════════ */
+function buildPlayerUrl(playerIndex, playerCount) {
   const p = S.players[playerIndex];
   const distribution = assignCards(playerCount);
   const myCardIndices = distribution[playerIndex];
 
-  const roles = PUZZLES.map(pz=>{
+  const roles = PUZZLES.map(pz => {
     let cardSet;
-    if(pz.fragments && pz.fragments.length){
-      cardSet = pz.fragments.map(f=>f.playerCard);
-    } else if(pz.roles && pz.roles.length){
+    if (pz.fragments && pz.fragments.length) {
+      cardSet = pz.fragments.map(f => f.playerCard);
+    } else if (pz.roles && pz.roles.length) {
       cardSet = pz.roles;
     } else {
       cardSet = pz.cards;
     }
 
-    const myCards = myCardIndices.map(ci=>{
+    const myCards = myCardIndices.map(ci => {
       const card = cardSet[ci];
-      if(!card){
-        console.error(`Missing card at index ${ci} for puzzle ${pz.id}`, cardSet);
+      if (!card) {
         return { title:'Missing', clue:'Card not found.', task:'', cardIndex:ci, fragmentId:null };
       }
       return {
@@ -1419,11 +1368,11 @@ function buildPlayerUrl(playerIndex, playerCount){
     };
   });
 
-  const payload={
+  const payload = {
     playerIndex,
-    name:p.name, avatar:p.avatar, color:p.color,
+    name: p.name, avatar: p.avatar, color: p.color,
     roles,
-    totalRooms: PUZZLES.length,
+    totalRooms:  PUZZLES.length,
     playerCount,
   };
 
@@ -1431,60 +1380,62 @@ function buildPlayerUrl(playerIndex, playerCount){
   return `${S.playerFileUrl}#d=${encoded}`;
 }
 
-function copyLink(i){
-  const el = document.getElementById('plr-url-'+i);
+/* ═══════════════════════════════════════════════════════════════
+   COPY LINK
+═══════════════════════════════════════════════════════════════ */
+function copyLink(i) {
+  const el = document.getElementById('plr-url-' + i);
   navigator.clipboard.writeText(el.dataset.fullUrl)
-    .then(()=>{ 
+    .then(() => {
       const btn = el.closest('.player-link-row').querySelector('button');
       btn.textContent = '✅ Copied!';
-      setTimeout(()=>btn.textContent='📋 Copy', 2000);
+      setTimeout(() => btn.textContent = '📋 Copy', 2000);
     });
 }
-
 
 /* ═══════════════════════════════════════════════════════════════
    START
 ═══════════════════════════════════════════════════════════════ */
-function hostStartGame(){
-  buildHUD();showScreen('game');loadPuzzle(0);startTimer();
+function hostStartGame() {
+  buildHUD(); showScreen('game'); loadPuzzle(0); startTimer();
 }
 
 /* ═══════════════════════════════════════════════════════════════
    HUD
 ═══════════════════════════════════════════════════════════════ */
-function buildHUD(){
-  document.getElementById('hud-dots').innerHTML=
-    PUZZLES.map((_,i)=>`<div class="hud-dot" id="hdot-${i}"></div>`).join('');
+function buildHUD() {
+  document.getElementById('hud-dots').innerHTML =
+    PUZZLES.map((_, i) => `<div class="hud-dot" id="hdot-${i}"></div>`).join('');
   updateHUDDots(0);
 }
-function updateHUDDots(r){
-  PUZZLES.forEach((_,i)=>{
-    const d=document.getElementById('hdot-'+i);
-    if(d)d.className='hud-dot'+(i<r?' done':i===r?' current':'');
+function updateHUDDots(r) {
+  PUZZLES.forEach((_, i) => {
+    const d = document.getElementById('hdot-' + i);
+    if (d) d.className = 'hud-dot' + (i < r ? ' done' : i === r ? ' current' : '');
   });
-  document.getElementById('hud-room-lbl').textContent=`Chamber ${r+1} of ${PUZZLES.length}`;
+  document.getElementById('hud-room-lbl').textContent = `Chamber ${r+1} of ${PUZZLES.length}`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    TIMER
 ═══════════════════════════════════════════════════════════════ */
-function startTimer(){
+function startTimer() {
   clearInterval(S.timerID);
-  S.timerID=setInterval(()=>{
-    if(S.paused)return;
+  S.timerID = setInterval(() => {
+    if (S.paused) return;
     S.timeLeft--;
-    const el=document.getElementById('hud-timer');
-    const m=String(Math.floor(S.timeLeft/60)).padStart(2,'0');
-    const s=String(S.timeLeft%60).padStart(2,'0');
-    el.textContent=`${m}:${s}`;
-    el.className='hud-timer'+(S.timeLeft<=300?' danger':S.timeLeft<=600?' warn':'');
-    if(S.timeLeft<=0){clearInterval(S.timerID);triggerFail();}
-  },1000);
+    const el = document.getElementById('hud-timer');
+    const m = String(Math.floor(S.timeLeft / 60)).padStart(2, '0');
+    const s = String(S.timeLeft % 60).padStart(2, '0');
+    el.textContent = `${m}:${s}`;
+    el.className = 'hud-timer' + (S.timeLeft <= 300 ? ' danger' : S.timeLeft <= 600 ? ' warn' : '');
+    if (S.timeLeft <= 0) { clearInterval(S.timerID); triggerFail(); }
+  }, 1000);
 }
-function pauseGame(){S.paused=true;document.getElementById('pause-modal').classList.add('open')}
-function resumeGame(){S.paused=false;document.getElementById('pause-modal').classList.remove('open')}
-function quitToMenu(){
-  if(!confirm("Quit? All progress will be lost."))return;
+function pauseGame()  { S.paused = true;  document.getElementById('pause-modal').classList.add('open'); }
+function resumeGame() { S.paused = false; document.getElementById('pause-modal').classList.remove('open'); }
+function quitToMenu() {
+  if (!confirm("Quit? All progress will be lost.")) return;
   clearInterval(S.timerID);
   document.getElementById('pause-modal').classList.remove('open');
   location.reload();
@@ -1493,94 +1444,69 @@ function quitToMenu(){
 /* ═══════════════════════════════════════════════════════════════
    LOAD PUZZLE
 ═══════════════════════════════════════════════════════════════ */
-function loadPuzzle(roomIndex){
-  const pz=PUZZLES[roomIndex];
-  const n=S.players.length;
-  S.room=roomIndex;
-  S.hintsThisRoom=0;
-  S.voteSelections=pz.type==='vote'?Array(pz.voteScenarios.length).fill(null):[];
-  S.flagSelections={};
-  S.contribs=Array(4).fill('');
-  S.seqSelections={};
+function loadPuzzle(roomIndex) {
+  const pz = PUZZLES[roomIndex];
+  S.room = roomIndex;
+  S.hintsThisRoom = 0;
+  S.voteSelections = pz.type === 'vote' ? Array(pz.voteScenarios.length).fill(null) : [];
+  S.flagSelections = {};
+  S.contribs = Array(4).fill('');
+  S.seqSelections = {};
 
   updateHUDDots(roomIndex);
-  document.getElementById('pz-eyebrow').textContent=pz.eyebrow;
-  document.getElementById('pz-title').textContent=pz.title;
-  document.getElementById('pz-type-lbl').textContent=pz.typeLabel;
-  document.getElementById('pz-progress').style.width=(roomIndex/PUZZLES.length*100)+'%';
-  document.getElementById('pz-scenario').innerHTML=pz.scenario;
+  document.getElementById('pz-eyebrow').textContent  = pz.eyebrow;
+  document.getElementById('pz-title').textContent    = pz.title;
+  document.getElementById('pz-type-lbl').textContent = pz.typeLabel;
+  document.getElementById('pz-progress').style.width = (roomIndex / PUZZLES.length * 100) + '%';
+  document.getElementById('pz-scenario').innerHTML   = pz.scenario;
 
-  const termEl=document.getElementById('pz-terminal');
-  if(pz.terminal){
+  const termEl = document.getElementById('pz-terminal');
+  if (pz.terminal) {
     termEl.classList.remove('hidden');
-    document.getElementById('pz-terminal-content').textContent=pz.terminal;
-  }else{
+    document.getElementById('pz-terminal-content').textContent = pz.terminal;
+  } else {
     termEl.classList.add('hidden');
   }
 
-  buildReadyStrip(n);
   hideFeedback();
   document.getElementById('hint-box').classList.remove('show');
   updateHintUI();
-  document.getElementById('submit-btn').disabled=true;
-  document.getElementById('submit-status').textContent='Complete all sections to unlock submit.';
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('submit-status').textContent = 'Complete all sections to unlock submit.';
 
-  ['contrib-section','flag-section','vote-section','seq-section'].forEach(id=>{
+  ['contrib-section','flag-section','vote-section','seq-section'].forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
 
-  if(pz.type==='sequence_build') buildSequenceBuild(pz,n);
-  else if(pz.type==='build')     buildContribSection(pz,n);
-  else if(pz.type==='flag')      buildFlagSection(pz);
-  else if(pz.type==='vote')      buildVoteSection(pz);
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   READY STRIP
-═══════════════════════════════════════════════════════════════ */
-function buildReadyStrip(n){
-  document.getElementById('ready-strip').innerHTML=
-    S.players.map((p,i)=>`
-      <div class="ready-chip" id="rchip-${i}" onclick="toggleReady(${i})"
-        title="Click when ${p.name} confirms ready">
-        <div class="ready-dot"></div>
-        <span>${p.avatar} ${p.name}</span>
-        <span style="font-size:.7rem;color:var(--muted)" id="rchip-lbl-${i}">not ready</span>
-      </div>`).join('');
-}
-function toggleReady(i){
-  const chip=document.getElementById('rchip-'+i);
-  const lbl=document.getElementById('rchip-lbl-'+i);
-  const r=chip.classList.toggle('ready');
-  lbl.textContent=r?'✅ ready':'not ready';
+  if      (pz.type === 'sequence_build') buildSequenceBuild(pz);
+  else if (pz.type === 'build')          buildContribSection(pz);
+  else if (pz.type === 'flag')           buildFlagSection(pz);
+  else if (pz.type === 'vote')           buildVoteSection(pz);
 }
 
 /* ═══════════════════════════════════════════════════════════════
    SEQUENCE + BUILD (Chamber 1)
 ═══════════════════════════════════════════════════════════════ */
-function buildSequenceBuild(pz,n){
+function buildSequenceBuild(pz) {
   document.getElementById('seq-section').classList.remove('hidden');
   document.getElementById('contrib-section').classList.remove('hidden');
-  document.getElementById('contrib-heading').textContent=
+  document.getElementById('contrib-heading').textContent =
     '✏️ Step 2 — Type each fragment\'s content into its agreed position';
 
-  /* Sequence dropdowns — one per fragment */
-  const positions=['1st','2nd','3rd','4th'];
-  document.getElementById('seq-rows').innerHTML=
-    pz.fragments.map(f=>`
+  document.getElementById('seq-rows').innerHTML =
+    pz.fragments.map(f => `
       <div class="seq-row">
         <span class="seq-label">${f.label}</span>
         <select class="seq-select" id="seq-${f.id}" onchange="onSeqChange()">
           <option value="">—</option>
-          ${[1,2,3,4].map(p=>`<option value="${p}">${p}</option>`).join('')}
+          ${[1,2,3,4].map(p => `<option value="${p}">${p}</option>`).join('')}
         </select>
         <span style="font-size:.78rem;color:var(--muted)">position in the prompt</span>
       </div>`).join('');
 
-  /* Contribution grid — 4 slots (positions 1–4) */
-  const grid=document.getElementById('contrib-grid');
-  grid.className='contrib-grid n2';
-  grid.innerHTML=[0,1,2,3].map(i=>`
+  const grid = document.getElementById('contrib-grid');
+  grid.className = 'contrib-grid n2';
+  grid.innerHTML = [0,1,2,3].map(i => `
     <div class="contrib-card" id="cc-${i}">
       <div class="cc-header" style="background:rgba(168,85,247,.08)">
         <span class="cc-name" style="color:var(--p1)">Position ${i+1}</span>
@@ -1596,92 +1522,98 @@ function buildSequenceBuild(pz,n){
   checkSeqBuildReady(pz);
 }
 
-function onSeqChange(){
-  const pz=PUZZLES[S.room];
-  pz.fragments.forEach(f=>{
-    const v=document.getElementById('seq-'+f.id).value;
-    if(v) S.seqSelections[f.id]=parseInt(v);
-    else  delete S.seqSelections[f.id];
+function onSeqChange() {
+  const pz = PUZZLES[S.room];
+  pz.fragments.forEach(f => {
+    const v = document.getElementById('seq-' + f.id).value;
+    if (v) S.seqSelections[f.id] = parseInt(v);
+    else   delete S.seqSelections[f.id];
   });
   checkSeqBuildReady(pz);
 }
 
-function checkSeqBuildReady(pz){
-  const seqDone = Object.keys(S.seqSelections).length===pz.fragments.length;
-  const contribDone = [0,1,2,3].every(i=>(S.contribs[i]||'').length>=20);
-  const allDone = seqDone && contribDone;
-  document.getElementById('submit-btn').disabled=!allDone;
-  const seqCount=Object.keys(S.seqSelections).length;
-  const contribCount=[0,1,2,3].filter(i=>(S.contribs[i]||'').length>=20).length;
-  document.getElementById('submit-status').textContent=allDone
-    ?'Sequence and content complete. Submit when ready.'
-    :`Sequence: ${seqCount}/4 assigned · Content: ${contribCount}/4 filled.`;
+function checkSeqBuildReady(pz) {
+  const seqDone     = Object.keys(S.seqSelections).length === pz.fragments.length;
+  const contribDone = [0,1,2,3].every(i => (S.contribs[i] || '').length >= 20);
+  const allDone     = seqDone && contribDone;
+  document.getElementById('submit-btn').disabled = !allDone;
+  const seqCount    = Object.keys(S.seqSelections).length;
+  const contribCount = [0,1,2,3].filter(i => (S.contribs[i] || '').length >= 20).length;
+  document.getElementById('submit-status').textContent = allDone
+    ? 'Sequence and content complete. Submit when ready.'
+    : `Sequence: ${seqCount}/4 assigned · Content: ${contribCount}/4 filled.`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   BUILD TYPE
+   BUILD TYPE — by issue, not by player (Chamber 4)
 ═══════════════════════════════════════════════════════════════ */
-function buildContribSection(pz,n){
+function buildContribSection(pz) {
   document.getElementById('contrib-section').classList.remove('hidden');
-  document.getElementById('contrib-heading').textContent='✏️ Team Contributions';
-  const grid=document.getElementById('contrib-grid');
-  grid.className=`contrib-grid n${Math.min(n,pz.roles.length)}`;
-  const count=Math.min(n,pz.roles.length);
-  grid.innerHTML=Array.from({length:count},(_,i)=>{
-    const p=S.players[i];
-    const role=pz.roles[i];
+  document.getElementById('contrib-heading').textContent =
+    '✏️ Team Findings — Copy & paste from the draft above, then explain each problem';
+
+  const grid  = document.getElementById('contrib-grid');
+  const count = pz.roles.length; // always all 4 issues regardless of player count
+
+  grid.className = 'contrib-grid n1';
+  grid.innerHTML = Array.from({length: count}, (_, i) => {
+    const role = pz.roles[i];
     return `
       <div class="contrib-card" id="cc-${i}">
         <div class="cc-header" style="background:${HDR_BG[i]}">
-          <span class="cc-avatar">${p.avatar}</span>
-          <span class="cc-name" style="color:${COLORS[i]}">${p.name}</span>
+          <span class="cc-name" style="color:${COLORS[i]}">${role.title}</span>
           <span class="cc-badge empty" id="cc-badge-${i}">Empty</span>
         </div>
         <div class="cc-body">
-          <div style="font-size:.72rem;color:${COLORS[i]};margin-bottom:6px;font-weight:600">
-            ${role.title}</div>
+          <div style="font-size:.78rem;color:var(--muted);margin-bottom:10px;
+            line-height:1.6;background:rgba(255,255,255,.03);
+            border-radius:6px;padding:8px 10px">
+            📌 ${role.instructions}
+          </div>
           <textarea class="cc-textarea" id="cc-ta-${i}"
-            placeholder="${role.placeholder||'Type findings here...'}"
-            oninput="onContribInput(${i})"></textarea>
+            placeholder="${role.placeholder}"
+            oninput="onContribInput(${i})"
+            style="min-height:100px"></textarea>
         </div>
       </div>`;
   }).join('');
-  checkBuildReady(count,pz);
+
+  checkBuildReady(count, pz);
 }
 
-function onContribInput(i){
-  const pz=PUZZLES[S.room];
-  const val=document.getElementById('cc-ta-'+i).value.trim();
-  S.contribs[i]=val;
+function onContribInput(i) {
+  const pz  = PUZZLES[S.room];
+  const val = document.getElementById('cc-ta-' + i).value.trim();
+  S.contribs[i] = val;
   const minLen = pz.roles?.[i]?.minLength || 20;
-  const filled=val.length>=minLen;
-  document.getElementById('cc-'+i).classList.toggle('filled',filled);
-  const badge=document.getElementById('cc-badge-'+i);
-  badge.textContent=filled?'✅ Done':'Empty';
-  badge.className=`cc-badge ${filled?'filled':'empty'}`;
-  if(pz.type==='sequence_build') checkSeqBuildReady(pz);
-  else checkBuildReady(Math.min(S.players.length,pz.roles.length),pz);
+  const filled = val.length >= minLen;
+  document.getElementById('cc-' + i).classList.toggle('filled', filled);
+  const badge = document.getElementById('cc-badge-' + i);
+  badge.textContent = filled ? '✅ Done' : 'Empty';
+  badge.className   = `cc-badge ${filled ? 'filled' : 'empty'}`;
+  if (pz.type === 'sequence_build') checkSeqBuildReady(pz);
+  else checkBuildReady(pz.roles.length, pz);
 }
 
-function checkBuildReady(count,pz){
-  const done=Array.from({length:count},(_,i)=>{
-    const minLen=pz.roles?.[i]?.minLength||20;
-    return (S.contribs[i]||'').length>=minLen;
+function checkBuildReady(count, pz) {
+  const done = Array.from({length: count}, (_, i) => {
+    const minLen = pz.roles?.[i]?.minLength || 20;
+    return (S.contribs[i] || '').length >= minLen;
   }).filter(Boolean).length;
-  const allDone=done===count;
-  document.getElementById('submit-btn').disabled=!allDone;
-  document.getElementById('submit-status').textContent=allDone
-    ?'All contributions filled. Submit when ready.'
-    :`${done}/${count} contributions filled.`;
+  const allDone = done === count;
+  document.getElementById('submit-btn').disabled = !allDone;
+  document.getElementById('submit-status').textContent = allDone
+    ? 'All sections filled. Submit when ready.'
+    : `${done}/${count} sections filled.`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    FLAG TYPE
 ═══════════════════════════════════════════════════════════════ */
-function buildFlagSection(pz){
+function buildFlagSection(pz) {
   document.getElementById('flag-section').classList.remove('hidden');
-  document.getElementById('flag-grid').innerHTML=
-    Object.entries(pz.claims).map(([k,claim])=>`
+  document.getElementById('flag-grid').innerHTML =
+    Object.entries(pz.claims).map(([k, claim]) => `
       <div class="flag-claim">
         <div class="flag-claim-label">Claim [${k}]</div>
         <div class="flag-claim-text">${claim.text}</div>
@@ -1694,179 +1626,168 @@ function buildFlagSection(pz){
       </div>`).join('');
   checkFlagReady(pz);
 }
-function hostFlag(claim,verdict){
-  S.flagSelections[claim]=verdict;
-  document.getElementById(`hf-${claim}-ok`).className=
-    'flag-btn'+(verdict==='ok'?' ok-sel':'');
-  document.getElementById(`hf-${claim}-flag`).className=
-    'flag-btn'+(verdict==='flag'?' flag-sel':'');
+function hostFlag(claim, verdict) {
+  S.flagSelections[claim] = verdict;
+  document.getElementById(`hf-${claim}-ok`).className =
+    'flag-btn' + (verdict === 'ok' ? ' ok-sel' : '');
+  document.getElementById(`hf-${claim}-flag`).className =
+    'flag-btn' + (verdict === 'flag' ? ' flag-sel' : '');
   checkFlagReady(PUZZLES[S.room]);
 }
-function checkFlagReady(pz){
-  const total=Object.keys(pz.claims).length;
-  const done=Object.keys(S.flagSelections).length;
-  const allDone=done===total;
-  document.getElementById('submit-btn').disabled=!allDone;
-  document.getElementById('submit-status').textContent=allDone
-    ?'All claims evaluated. Submit when ready.'
-    :`${done}/${total} claims evaluated.`;
+function checkFlagReady(pz) {
+  const total  = Object.keys(pz.claims).length;
+  const done   = Object.keys(S.flagSelections).length;
+  const allDone = done === total;
+  document.getElementById('submit-btn').disabled = !allDone;
+  document.getElementById('submit-status').textContent = allDone
+    ? 'All claims evaluated. Submit when ready.'
+    : `${done}/${total} claims evaluated.`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    VOTE TYPE
 ═══════════════════════════════════════════════════════════════ */
-function buildVoteSection(pz){
+function buildVoteSection(pz) {
   document.getElementById('vote-section').classList.remove('hidden');
-  document.getElementById('vote-instructions').textContent=pz.voteInstructions;
-  document.getElementById('vote-options-wrap').innerHTML=
-    pz.voteScenarios.map((sc,si)=>`
+  document.getElementById('vote-instructions').textContent = pz.voteInstructions;
+  document.getElementById('vote-options-wrap').innerHTML =
+    pz.voteScenarios.map((sc, si) => `
       <div class="vote-scenario">
         <div class="vote-scenario-label">${sc.label}</div>
         <div class="vote-scenario-q">${sc.question}</div>
-        ${sc.options.map((opt,oi)=>`
+        ${sc.options.map((opt, oi) => `
           <div class="vote-opt" id="vopt-${si}-${oi}"
             onclick="castVote(${si},${oi})">${opt}</div>`).join('')}
       </div>`).join('');
   checkVoteReady(pz);
 }
-function castVote(si,oi){
-  const pz=PUZZLES[S.room];
-  pz.voteScenarios[si].options.forEach((_,j)=>{
+function castVote(si, oi) {
+  const pz = PUZZLES[S.room];
+  pz.voteScenarios[si].options.forEach((_, j) => {
     document.getElementById(`vopt-${si}-${j}`)?.classList.remove('selected');
   });
-  S.voteSelections[si]=pz.voteScenarios[si].options[oi];
+  S.voteSelections[si] = pz.voteScenarios[si].options[oi];
   document.getElementById(`vopt-${si}-${oi}`).classList.add('selected');
   checkVoteReady(pz);
 }
-function checkVoteReady(pz){
-  const done=S.voteSelections.filter(v=>v!==null).length;
-  const allVoted=done===pz.voteScenarios.length;
-  document.getElementById('submit-btn').disabled=!allVoted;
-  document.getElementById('submit-status').textContent=allVoted
-    ?'All decisions made. Submit when ready.'
-    :`${done}/${pz.voteScenarios.length} decisions made.`;
+function checkVoteReady(pz) {
+  const done     = S.voteSelections.filter(v => v !== null).length;
+  const allVoted = done === pz.voteScenarios.length;
+  document.getElementById('submit-btn').disabled = !allVoted;
+  document.getElementById('submit-status').textContent = allVoted
+    ? 'All decisions made. Submit when ready.'
+    : `${done}/${pz.voteScenarios.length} decisions made.`;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    SUBMIT
 ═══════════════════════════════════════════════════════════════ */
-function submitAnswer(){
-  const pz=PUZZLES[S.room];
-  let pass=false;
+function submitAnswer() {
+  const pz = PUZZLES[S.room];
+  let pass = false;
 
-  if(pz.type==='sequence_build'){
-    /* Check sequence */
-    const seqCorrect=pz.fragments.every(f=>S.seqSelections[f.id]===f.correctPosition);
-    /* Check all 4 content slots filled */
-    const contentOk=[0,1,2,3].every(i=>(S.contribs[i]||'').length>=20);
-    pass=seqCorrect&&contentOk;
+  if (pz.type === 'sequence_build') {
+    const seqCorrect  = pz.fragments.every(f => S.seqSelections[f.id] === f.correctPosition);
+    const contentOk   = [0,1,2,3].every(i => (S.contribs[i] || '').length >= 20);
+    pass = seqCorrect && contentOk;
 
-  }else if(pz.type==='build'){
-    pass=true; /* content validated before submit enabled */
+  } else if (pz.type === 'build') {
+    pass = true; // content validated before submit is enabled
 
-  }else if(pz.type==='flag'){
-    const flagged=Object.entries(S.flagSelections)
-      .filter(([,v])=>v==='flag').map(([k])=>k);
-    const correct=flagged.filter(f=>pz.correctFlags.includes(f));
-    const wrong=flagged.filter(f=>!pz.correctFlags.includes(f));
-    pass=correct.length>=pz.flagTarget&&wrong.length===0;
+  } else if (pz.type === 'flag') {
+    const flagged  = Object.entries(S.flagSelections)
+      .filter(([, v]) => v === 'flag').map(([k]) => k);
+    const correct  = flagged.filter(f =>  pz.correctFlags.includes(f));
+    const wrong    = flagged.filter(f => !pz.correctFlags.includes(f));
+    pass = correct.length >= pz.flagTarget && wrong.length === 0;
 
-  }else if(pz.type==='vote'){
-    pass=pz.voteScenarios.every((sc,i)=>S.voteSelections[i]===sc.correct);
+  } else if (pz.type === 'vote') {
+    pass = pz.voteScenarios.every((sc, i) => S.voteSelections[i] === sc.correct);
   }
 
-  if(pass){
-    document.getElementById('submit-btn').disabled=true;
-    showFeedback('ok',pz.successMsg);
-    awardPoints();
-    setTimeout(()=>advanceRoom(),3200);
-  }else{
-    showFeedback('err',pz.failMsg);
+  if (pass) {
+    document.getElementById('submit-btn').disabled = true;
+    showFeedback('ok', pz.successMsg);
+    setTimeout(() => advanceRoom(), 3200);
+  } else {
+    showFeedback('err', pz.failMsg);
   }
-}
-
-function awardPoints(){
-  const share=Math.floor((800+Math.floor(S.timeLeft/8))/S.players.length);
-  S.scores=S.scores.map(s=>s+share);
 }
 
 /* ═══════════════════════════════════════════════════════════════
    ADVANCE
 ═══════════════════════════════════════════════════════════════ */
-function advanceRoom(){
+function advanceRoom() {
   S.room++;
-  if(S.room>=PUZZLES.length){triggerVictory();return;}
-  transition(`Accessing Chamber ${S.room+1}...`,()=>loadPuzzle(S.room));
+  if (S.room >= PUZZLES.length) { triggerVictory(); return; }
+  transition(`Accessing Chamber ${S.room + 1}...`, () => loadPuzzle(S.room));
 }
-function transition(msg,cb){
-  const ov=document.getElementById('overlay');
-  document.getElementById('overlay-msg').textContent=msg;
+function transition(msg, cb) {
+  const ov = document.getElementById('overlay');
+  document.getElementById('overlay-msg').textContent = msg;
   ov.classList.add('show');
-  setTimeout(()=>{cb();ov.classList.remove('show');},1800);
+  setTimeout(() => { cb(); ov.classList.remove('show'); }, 1800);
 }
 
 /* ═══════════════════════════════════════════════════════════════
    HINTS
 ═══════════════════════════════════════════════════════════════ */
-function useHint(){
-  const pz=PUZZLES[S.room];
-  if(S.hintsPerRoom===0){alert("Hints disabled for this game! 💪");return;}
-  if(S.hintsThisRoom>=S.hintsPerRoom){alert("No more hints for this chamber!");return;}
-  if(S.hintsThisRoom>=pz.hints.length){alert("No further hints available!");return;}
-  document.getElementById('hint-box').textContent=pz.hints[S.hintsThisRoom];
+function useHint() {
+  const pz = PUZZLES[S.room];
+  if (S.hintsPerRoom === 0)              { alert("Hints disabled for this game! 💪"); return; }
+  if (S.hintsThisRoom >= S.hintsPerRoom) { alert("No more hints for this chamber!"); return; }
+  if (S.hintsThisRoom >= pz.hints.length){ alert("No further hints available!"); return; }
+  document.getElementById('hint-box').textContent = pz.hints[S.hintsThisRoom];
   document.getElementById('hint-box').classList.add('show');
-  S.hintsThisRoom++;S.totalHints++;
-  S.scores=S.scores.map(s=>Math.max(0,s-100));
+  S.hintsThisRoom++; S.totalHints++;
   updateHintUI();
 }
-function updateHintUI(){
-  const rem=Math.max(0,S.hintsPerRoom-S.hintsThisRoom);
-  document.getElementById('hint-counter').textContent=
-    S.hintsPerRoom===0?'Hints disabled'
-      :`${rem} hint${rem!==1?'s':''} remaining this chamber`;
-  document.getElementById('hint-btn').disabled=S.hintsPerRoom===0||rem===0;
+function updateHintUI() {
+  const rem = Math.max(0, S.hintsPerRoom - S.hintsThisRoom);
+  document.getElementById('hint-counter').textContent =
+    S.hintsPerRoom === 0 ? 'Hints disabled'
+      : `${rem} hint${rem !== 1 ? 's' : ''} remaining this chamber`;
+  document.getElementById('hint-btn').disabled = S.hintsPerRoom === 0 || rem === 0;
 }
 
 /* ═══════════════════════════════════════════════════════════════
    FEEDBACK
 ═══════════════════════════════════════════════════════════════ */
-function showFeedback(type,msg){
-  const el=document.getElementById('feedback-bar');
-  el.textContent=msg;
-  el.className=`feedback-bar show ${type}`;
-  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+function showFeedback(type, msg) {
+  const el = document.getElementById('feedback-bar');
+  el.textContent = msg;
+  el.className = `feedback-bar show ${type}`;
+  el.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
-function hideFeedback(){
-  document.getElementById('feedback-bar').className='feedback-bar';
+function hideFeedback() {
+  document.getElementById('feedback-bar').className = 'feedback-bar';
 }
 
 /* ═══════════════════════════════════════════════════════════════
    VICTORY
 ═══════════════════════════════════════════════════════════════ */
-function triggerVictory(){
+function triggerVictory() {
   clearInterval(S.timerID);
   document.getElementById('hud').classList.remove('visible');
-  const m=String(Math.floor(S.timeLeft/60)).padStart(2,'0');
-  const s=String(S.timeLeft%60).padStart(2,'0');
-  document.getElementById('v-time').textContent=`${m}:${s}`;
-  document.getElementById('v-hints').textContent=S.totalHints;
-  document.getElementById('v-score').textContent=
-    S.scores.reduce((a,b)=>a+b,0).toLocaleString();
-  const sorted=S.players.map((p,i)=>({...p,score:S.scores[i]}))
-    .sort((a,b)=>b.score-a.score);
-  document.getElementById('v-lb').innerHTML=sorted.map((p,i)=>`
-    <div class="lb-row">
-      <span style="font-size:1.3rem">${['🥇','🥈','🥉','🏅'][i]}</span>
-      <span>${p.avatar} ${p.name}</span>
-      <span style="color:${p.color};font-weight:700">${p.score.toLocaleString()} pts</span>
-    </div>`).join('');
+
+  // Build per-chamber learning summaries
+  document.getElementById('victory-learnings').innerHTML =
+    PUZZLES.map(pz => `
+      <div class="learning-chamber">
+        <div class="learning-eyebrow">${pz.eyebrow}</div>
+        <div class="learning-title">${pz.title}</div>
+        <ul class="learning-list">
+          ${pz.debriefNotes.map(n => `<li>${n}</li>`).join('')}
+        </ul>
+      </div>`).join('');
+
   buildDebriefNotes();
   showScreen('victory');
 }
 
-function buildDebriefNotes(){
-  document.getElementById('debrief-notes-content').innerHTML=
-    PUZZLES.map(pz=>`
+function buildDebriefNotes() {
+  document.getElementById('debrief-notes-content').innerHTML =
+    PUZZLES.map(pz => `
       <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
         <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase;
           letter-spacing:.1em;margin-bottom:4px">${pz.eyebrow}</div>
@@ -1874,27 +1795,27 @@ function buildDebriefNotes(){
         <div style="font-size:.83rem;color:var(--muted);font-style:italic;margin-bottom:10px">
           💬 "${pz.debriefQuestion}"</div>
         <ul style="font-size:.8rem;line-height:1.8;padding-left:16px;color:var(--text)">
-          ${pz.debriefNotes.map(n=>`<li>${n}</li>`).join('')}
+          ${pz.debriefNotes.map(n => `<li>${n}</li>`).join('')}
         </ul>
       </div>`).join('');
 }
 
-function toggleDebrief(){
-  const el=document.getElementById('debrief-notes');
+function toggleDebrief() {
+  const el = document.getElementById('debrief-notes');
   el.classList.toggle('hidden');
-  if(!el.classList.contains('hidden'))
-    el.scrollIntoView({behavior:'smooth',block:'start'});
+  if (!el.classList.contains('hidden'))
+    el.scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 /* ═══════════════════════════════════════════════════════════════
    FAIL
 ═══════════════════════════════════════════════════════════════ */
-function triggerFail(){
+function triggerFail() {
   clearInterval(S.timerID);
   document.getElementById('hud').classList.remove('visible');
-  document.getElementById('fail-room').textContent=
-    `Chamber ${S.room+1} of ${PUZZLES.length}`;
-  document.getElementById('fail-hints').textContent=S.totalHints;
+  document.getElementById('fail-room').textContent =
+    `Chamber ${S.room + 1} of ${PUZZLES.length}`;
+  document.getElementById('fail-hints').textContent = S.totalHints;
   showScreen('fail');
 }
 </script>
